@@ -5,10 +5,57 @@ const PRODUCTS={
  lanyard:{qty:'q_lanyard',name:'Dây đeo thẻ sinh viên',price:22000},
  union:{qty:'q_union',name:'Áo Đoàn',price:75000,size:'sz_union'}
 };
+
+// Danh mục lấy từ “DS SV NHẬP HỌC ĐHCQ 2026”.
+// Lớp phụ thuộc vào Ngành học để tránh chọn sai ngành/lớp và thuận tiện sort dữ liệu.
+const MAJOR_CLASSES={
+ 'Điều dưỡng đa khoa':['ĐH ĐD 14A','ĐH ĐD 14B','ĐH ĐD 14C'],
+ 'Điều dưỡng nha khoa':['ĐH ĐD 14D'],
+ 'Điều dưỡng gây mê hồi sức':['ĐH ĐD 14E'],
+ 'Kỹ thuật xét nghiệm y học':['ĐH KT XNYH 14A','ĐH KT XNYH 14B'],
+ 'Kỹ thuật hình ảnh y học':['ĐH KT HAYH 13A','ĐH KT HAYH 13B'],
+ 'Kỹ thuật phục hồi chức năng':['ĐH KT PHCN 13A','ĐH KT PHCN 13B'],
+ 'Dược học':['ĐH Dược học 14A','ĐH Dược học 14B'],
+ 'Y khoa':['ĐH YK 12A','ĐH YK 12B','ĐH YK 12C','ĐH YK 12D'],
+ 'Y tế công cộng':['ĐH YTCC 10']
+};
+
 let state={total:0,lines:[],code:''};
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
 const clean=s=>(s||'').trim();
+
+function setupAcademicFields(){
+ const oldClass=$('className');
+ if(!oldClass||$('majorName')) return;
+ const classWrap=oldClass.parentElement;
+ const grid=classWrap.parentElement;
+
+ const majorWrap=document.createElement('div');
+ majorWrap.innerHTML='<label>Ngành học *</label><select id="majorName"><option value="">— Chọn ngành học —</option></select>';
+ grid.insertBefore(majorWrap,classWrap);
+
+ const classSelect=document.createElement('select');
+ classSelect.id='className';
+ classSelect.innerHTML='<option value="">— Chọn ngành học trước —</option>';
+ classWrap.innerHTML='<label>Lớp *</label>';
+ classWrap.appendChild(classSelect);
+
+ const major=$('majorName');
+ Object.keys(MAJOR_CLASSES).forEach(x=>{
+   const op=document.createElement('option');op.value=x;op.textContent=x;major.appendChild(op);
+ });
+
+ major.addEventListener('change',()=>{
+   const classes=MAJOR_CLASSES[major.value]||[];
+   classSelect.innerHTML='<option value="">— Chọn lớp —</option>';
+   classes.forEach(x=>{const op=document.createElement('option');op.value=x;op.textContent=x;classSelect.appendChild(op)});
+   classSelect.disabled=!classes.length;
+   state.code='';
+ });
+ classSelect.disabled=true;
+ classSelect.addEventListener('change',()=>state.code='');
+}
 
 function setStep(n){
  ['step1','step2','step3','done'].forEach(id=>$(id).classList.add('hidden'));
@@ -45,32 +92,33 @@ function compute(){
 }
 
 function validatePerson(){
- const required=[['name','Họ và tên'],['studentId','Mã sinh viên'],['cccd','Số CCCD'],['className','Lớp'],['phone','Số điện thoại'],['email','Email']];
- for(const [id,label] of required){if(!clean($(id).value)){alert('Vui lòng nhập '+label+'.');$(id).focus();return false}}
+ const required=[['name','Họ và tên'],['studentId','Mã sinh viên'],['cccd','Số CCCD'],['majorName','Ngành học'],['className','Lớp'],['phone','Số điện thoại'],['email','Email']];
+ for(const [id,label] of required){if(!clean($(id).value)){alert('Vui lòng chọn/nhập '+label+'.');$(id).focus();return false}}
+ const allowed=MAJOR_CLASSES[clean($('majorName').value)]||[];
+ if(!allowed.includes(clean($('className').value))){alert('Lớp không thuộc ngành đã chọn. Vui lòng chọn lại.');$('majorName').focus();return false}
  if(!/^\d{12}$/.test(clean($('cccd').value))){alert('Số CCCD phải gồm đúng 12 chữ số.');$('cccd').focus();return false}
  const phone=clean($('phone').value).replace(/\s/g,'');if(!/^0?\d{9,10}$/.test(phone)){alert('Vui lòng kiểm tra lại số điện thoại.');$('phone').focus();return false}
  const email=clean($('email').value);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Email chưa đúng định dạng.');$('email').focus();return false}
  return true;
 }
 
-function normalizeCodePart(value){
- return clean(value)
-  .normalize('NFD')
-  .replace(/[\u0300-\u036f]/g,'')
-  .replace(/Đ/g,'D').replace(/đ/g,'d')
-  .replace(/[^A-Za-z0-9]/g,'')
-  .toUpperCase();
-}
-
 function buildCode(){
- const cls=normalizeCodePart($('className').value)||'LOP';
- const sid=normalizeCodePart($('studentId').value)||'MSSV';
- state.code=`${cls}-${sid}`.slice(0,30);
+ if(state.code)return state.code;
+ // Nội dung chuyển khoản hiển thị rõ lớp + MSSV theo yêu cầu đối soát.
+ state.code=clean($('className').value)+'-'+clean($('studentId').value);
  return state.code;
 }
 
 function renderReview(){
- const p=[['Họ tên',clean($('name').value)],['Mã sinh viên',clean($('studentId').value)],['CCCD',clean($('cccd').value)],['Lớp',clean($('className').value)],['Điện thoại',clean($('phone').value)],['Email',clean($('email').value)]];
+ const p=[
+  ['Họ tên',clean($('name').value)],
+  ['Mã sinh viên',clean($('studentId').value)],
+  ['CCCD',clean($('cccd').value)],
+  ['Ngành học',clean($('majorName').value)],
+  ['Lớp',clean($('className').value)],
+  ['Điện thoại',clean($('phone').value)],
+  ['Email',clean($('email').value)]
+ ];
  $('personReview').innerHTML='<div class="review"><div class="mini" style="font-weight:900;margin-bottom:4px">THÔNG TIN HÀNH CHÍNH</div>'+p.map(x=>`<div class="line"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')+'</div>';
  $('orderLines').innerHTML='<div class="review"><div class="mini" style="font-weight:900;margin-bottom:4px">SẢN PHẨM ĐĂNG KÝ</div>'+state.lines.map(x=>`<div class="line"><span><strong>${x.name}</strong><br><span class="mini">${x.qty} × ${money(x.price)}${x.meta?' • '+x.meta:''}</span></span><strong>${money(x.subtotal)}</strong></div>`).join('')+'</div>';
  $('totalText').textContent=money(state.total);$('orderCode').textContent=buildCode();
@@ -97,9 +145,8 @@ function previewFile(){
 function finish(){
  if(!$('proof').files[0]){alert('Vui lòng tải ảnh minh chứng chuyển khoản.');return}
  if(!$('confirm').checked){alert('Vui lòng xác nhận thông tin trước khi hoàn tất.');return}
- buildCode();
  const items=state.lines.map(x=>`<li><strong>${x.name}:</strong> ${x.qty}${x.meta?' — '+x.meta:''} — ${money(x.subtotal)}</li>`).join('');
- $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Nội dung chuyển khoản:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
+ $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Nội dung chuyển khoản:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Ngành học:</strong> ${clean($('majorName').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
  setStep(4);
 }
 
@@ -108,9 +155,9 @@ async function copyText(text,btn){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+ setupAcademicFields();
  document.querySelectorAll('.qty').forEach(el=>el.addEventListener('change',compute));
  $('type_blouse').addEventListener('change',compute);$('sz_blouse').addEventListener('change',compute);$('sz_sport').addEventListener('change',compute);$('sz_union').addEventListener('change',compute);
- $('className').addEventListener('input',()=>state.code='');
  $('studentId').addEventListener('input',()=>state.code='');
  updateControlState();compute();
 });
