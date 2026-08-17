@@ -9,6 +9,18 @@ const PRICES = {
   union: 75000,
 };
 
+const MAJOR_CLASSES = {
+  'Điều dưỡng đa khoa':['ĐH ĐD 14A','ĐH ĐD 14B','ĐH ĐD 14C'],
+  'Điều dưỡng nha khoa':['ĐH ĐD 14D'],
+  'Điều dưỡng gây mê hồi sức':['ĐH ĐD 14E'],
+  'Kỹ thuật xét nghiệm y học':['ĐH KT XNYH 14A','ĐH KT XNYH 14B'],
+  'Kỹ thuật hình ảnh y học':['ĐH KT HAYH 13A','ĐH KT HAYH 13B'],
+  'Kỹ thuật phục hồi chức năng':['ĐH KT PHCN 13A','ĐH KT PHCN 13B'],
+  'Dược học':['ĐH Dược học 14A','ĐH Dược học 14B'],
+  'Y khoa':['ĐH YK 12A','ĐH YK 12B','ĐH YK 12C','ĐH YK 12D'],
+  'Y tế công cộng':['ĐH YTCC 10']
+};
+
 function doGet() {
   return ContentService.createTextOutput('Trang phục sinh viên backend is running');
 }
@@ -31,9 +43,10 @@ function saveRegistration_(data) {
   const sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) throw new Error('Không tìm thấy sheet Đăng ký');
 
+  const major = clean_(data.majorName);
   const cls = clean_(data.className);
   const studentId = clean_(data.studentId);
-  const transferCode = normalizeCode_(cls) + '-' + normalizeCode_(studentId);
+  const transferCode = cls + '-' + studentId;
 
   const qBlouse = qty_(data.qBlouse);
   const qSport = qty_(data.qSport);
@@ -52,7 +65,7 @@ function saveRegistration_(data) {
     const bytes = Utilities.base64Decode(data.proofBase64);
     const mime = clean_(data.proofMime) || 'image/jpeg';
     const ext = mime.indexOf('png') >= 0 ? 'png' : mime.indexOf('webp') >= 0 ? 'webp' : 'jpg';
-    const safeName = `${transferCode}-${Date.now()}.${ext}`;
+    const safeName = `${normalizeCode_(cls)}-${normalizeCode_(studentId)}-${Date.now()}.${ext}`;
     const blob = Utilities.newBlob(bytes, mime, safeName);
     const file = DriveApp.getFolderById(PROOF_FOLDER_ID).createFile(blob);
     proofUrl = file.getUrl();
@@ -67,6 +80,7 @@ function saveRegistration_(data) {
     clean_(data.name),
     studentId,
     clean_(data.cccd),
+    major,
     cls,
     clean_(data.phone),
     clean_(data.email),
@@ -91,12 +105,12 @@ function saveRegistration_(data) {
   sh.appendRow(row);
   const r = sh.getLastRow();
   sh.getRange(r, 1).setNumberFormat('dd/MM/yyyy HH:mm:ss');
-  sh.getRange(r, 12).setNumberFormat('#,##0 [$₫-vi-VN]');
-  sh.getRange(r, 15).setNumberFormat('#,##0 [$₫-vi-VN]');
-  sh.getRange(r, 17).setNumberFormat('#,##0 [$₫-vi-VN]');
-  sh.getRange(r, 20).setNumberFormat('#,##0 [$₫-vi-VN]');
+  sh.getRange(r, 13).setNumberFormat('#,##0 [$₫-vi-VN]');
+  sh.getRange(r, 16).setNumberFormat('#,##0 [$₫-vi-VN]');
+  sh.getRange(r, 18).setNumberFormat('#,##0 [$₫-vi-VN]');
   sh.getRange(r, 21).setNumberFormat('#,##0 [$₫-vi-VN]');
-  sh.getRange(r, 22).setFormula(`=HYPERLINK("${proofUrl}","Xem minh chứng")`);
+  sh.getRange(r, 22).setNumberFormat('#,##0 [$₫-vi-VN]');
+  sh.getRange(r, 23).setFormula(`=HYPERLINK("${proofUrl}","Xem minh chứng")`);
 
   sendConfirmation_(data, transferCode, total, {
     qBlouse, qSport, qLanyard, qUnion,
@@ -121,6 +135,7 @@ function sendConfirmation_(data, transferCode, total, x) {
     `Chào ${clean_(data.name)},`,
     '',
     'Hệ thống đã ghi nhận đăng ký và minh chứng chuyển khoản của bạn.',
+    `Ngành học: ${clean_(data.majorName)}`,
     `Lớp: ${clean_(data.className)}`,
     `MSSV: ${clean_(data.studentId)}`,
     `Nội dung chuyển khoản: ${transferCode}`,
@@ -137,9 +152,14 @@ function sendConfirmation_(data, transferCode, total, x) {
 }
 
 function validate_(d) {
-  const required = ['name','studentId','cccd','className','phone','email'];
+  const required = ['name','studentId','cccd','majorName','className','phone','email'];
   required.forEach(k => { if (!clean_(d[k])) throw new Error(`Thiếu trường ${k}`); });
   if (!/^\d{12}$/.test(clean_(d.cccd))) throw new Error('CCCD phải đủ 12 số');
+  const major = clean_(d.majorName);
+  const cls = clean_(d.className);
+  if (!MAJOR_CLASSES[major] || MAJOR_CLASSES[major].indexOf(cls) < 0) {
+    throw new Error('Ngành học và lớp không khớp danh mục chính thức');
+  }
 }
 
 function qty_(v) {
