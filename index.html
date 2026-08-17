@@ -1,106 +1,215 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Đăng ký trang phục & vật phẩm sinh viên</title>
-<style>
-:root{--p:#0f766e;--p2:#14b8a6;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--bg:#f8fafc;--warn:#fff7ed;--warnink:#9a3412;--blue:#eff6ff;--blueink:#1d4ed8}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#ecfeff 0,#f8fafc 360px);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink)}
-.wrap{max-width:980px;margin:28px auto 70px;padding:0 16px}.top{display:flex;gap:14px;align-items:center}.logo{width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;display:grid;place-items:center;font-weight:950}.top h1{font-size:clamp(24px,4vw,38px);margin:0;line-height:1.08}.sub{color:var(--muted);margin-top:7px}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}.step{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:center;font-size:13px;font-weight:800;color:var(--muted)}.step.active{background:#ccfbf1;color:#115e59;border-color:#5eead4}.step.done{background:#f0fdfa;color:#0f766e}
-.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 16px 46px rgba(15,23,42,.07)}.section-title{font-size:20px;margin:0 0 16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}input,select{width:100%;padding:12px 13px;border:1px solid #cbd5e1;border-radius:12px;font-size:15px;background:#fff;color:#0f172a}input:focus,select:focus{outline:none;border-color:#2dd4bf;box-shadow:0 0 0 3px #99f6e433}
-.product{border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:12px;background:#fcfcfd}.prow{display:grid;grid-template-columns:1.3fr .6fr .7fr .7fr;gap:10px;align-items:end}.pname strong{font-size:16px}.price{font-size:13px;color:var(--p);font-weight:900;margin-top:5px}.pending{color:#b45309}.hint{font-size:12px;color:var(--muted);margin-top:6px}.mini{font-size:12px;color:var(--muted)}
-.guide{margin-top:12px}.guide summary{cursor:pointer;font-weight:850;color:#0f766e}.guidebox{margin-top:10px;border:1px solid var(--line);border-radius:14px;overflow:hidden}.guidebox table{width:100%;border-collapse:collapse;font-size:13px}.guidebox th,.guidebox td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}.guidebox th{background:#f1f5f9}.guidebox tr:last-child td{border-bottom:0}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.gtitle{font-weight:900;margin:0 0 7px}
-.totalbar{margin-top:18px;padding:16px;border-radius:16px;background:#f0fdfa;border:1px solid #99f6e4;display:flex;align-items:center;justify-content:space-between;gap:12px}.totalbar .num{font-size:25px;font-weight:950;color:#0f766e}.warning{margin-top:12px;background:var(--warn);color:var(--warnink);padding:12px 14px;border-radius:12px;font-size:13px}.info{margin-top:12px;background:var(--blue);color:var(--blueink);padding:12px 14px;border-radius:12px;font-size:13px}.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}button{border:0;border-radius:13px;padding:12px 18px;font-weight:850;font-size:15px;cursor:pointer}.primary{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}.secondary{background:#f1f5f9;color:#334155}
-.summary{display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:start}.line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}.line:last-child{border-bottom:0}.totalbox{background:#f0fdfa;border:1px solid #99f6e4;border-radius:16px;padding:16px;margin-top:12px}.big{font-size:34px;font-weight:950;color:#0f766e}.qrbox{border:1px solid var(--line);border-radius:18px;padding:18px;text-align:center}.qrbox img{width:100%;max-width:320px;border-radius:12px}.bank{margin-top:12px;text-align:left;background:#f8fafc;border-radius:12px;padding:12px}.bankrow{display:flex;justify-content:space-between;gap:10px;padding:5px 0}.copy{padding:6px 9px;border-radius:9px;font-size:12px;background:#e2e8f0;color:#0f172a}
-.upload{border:2px dashed #94a3b8;border-radius:18px;padding:24px;text-align:center;background:#f8fafc}.preview{display:none;max-width:320px;max-height:360px;border-radius:14px;margin-top:14px}.check{width:72px;height:72px;border-radius:50%;margin:0 auto 15px;background:#dcfce7;color:#15803d;display:grid;place-items:center;font-size:38px;font-weight:950}.emailmock{margin:18px auto 0;max-width:680px;text-align:left;border:1px solid var(--line);border-radius:16px;padding:18px}.hidden{display:none!important}
-@media(max-width:800px){.grid,.summary,.split{grid-template-columns:1fr}.prow{grid-template-columns:1fr 1fr}.pname{grid-column:1/-1}.steps{grid-template-columns:1fr}.totalbar{align-items:flex-start;flex-direction:column}}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div class="logo">SV</div><div><h1>Đăng ký trang phục & vật phẩm sinh viên</h1><div class="sub">Đăng ký số lượng, chọn size, thanh toán theo QR và gửi minh chứng</div></div></div>
-  <div class="steps"><div class="step active" id="s1">1. Thông tin & đăng ký</div><div class="step" id="s2">2. Tổng tiền & QR</div><div class="step" id="s3">3. Minh chứng & xác nhận</div></div>
+  <div class="top">
+    <div class="logo">SV</div>
+    <div>
+      <h1>Đăng ký trang phục & vật phẩm sinh viên</h1>
+      <div class="sub">Khai thông tin → chọn số lượng & size → thanh toán theo QR → gửi minh chứng</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step active" id="s1">1. Thông tin & đăng ký</div>
+    <div class="step" id="s2">2. Tổng tiền & QR</div>
+    <div class="step" id="s3">3. Minh chứng & xác nhận</div>
+  </div>
 
   <section class="card" id="step1">
     <h2 class="section-title">Bước 1 — Thông tin hành chính</h2>
+    <div class="required-note">Các trường có dấu * là bắt buộc.</div>
     <div class="grid">
-      <div><label>Họ và tên *</label><input id="name" placeholder="Nguyễn Văn A"></div>
+      <div><label>Họ và tên *</label><input id="name" autocomplete="name" placeholder="Nguyễn Văn A"></div>
       <div><label>Mã sinh viên *</label><input id="studentId" placeholder="VD: 22123456"></div>
-      <div><label>Số căn cước công dân *</label><input id="cccd" inputmode="numeric" maxlength="12" placeholder="12 số CCCD"></div>
+      <div><label>Số căn cước công dân *</label><input id="cccd" inputmode="numeric" maxlength="12" placeholder="Nhập đủ 12 số CCCD"></div>
       <div><label>Lớp *</label><input id="className" placeholder="VD: Y6A"></div>
-      <div><label>Số điện thoại *</label><input id="phone" placeholder="09xxxxxxxx"></div>
-      <div><label>Email nhận xác nhận *</label><input id="email" type="email" placeholder="tenban@gmail.com"></div>
+      <div><label>Số điện thoại *</label><input id="phone" inputmode="tel" autocomplete="tel" placeholder="09xxxxxxxx"></div>
+      <div><label>Email nhận xác nhận *</label><input id="email" type="email" autocomplete="email" placeholder="tenban@gmail.com"></div>
     </div>
+    <div class="privacy">Vui lòng kiểm tra kỹ họ tên, mã sinh viên, CCCD và lớp trước khi sang bước thanh toán.</div>
 
-    <h2 class="section-title" style="margin-top:28px">Sản phẩm đăng ký</h2>
+    <h2 class="section-title products-title">Sản phẩm đăng ký</h2>
 
     <div class="product">
       <div class="prow">
-        <div class="pname"><strong>Áo blouse</strong><div class="price pending">Chưa cập nhật giá</div><div class="hint">Chọn đúng kiểu Nam/Nữ vì bảng size khác nhau.</div></div>
-        <div><label>Số lượng</label><select id="q_blouse" class="qty" data-name="Áo blouse" data-price=""><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-        <div><label>Kiểu áo</label><select id="type_blouse"><option value="Nam">Nam</option><option value="Nữ">Nữ</option></select></div>
+        <div class="pname">
+          <strong>Bộ blouse + mũ</strong>
+          <div class="price">375.000đ / bộ</div>
+          <span class="tag">Đã gồm mũ</span>
+          <div class="hint">Bộ blouse 350.000đ + mũ 25.000đ. Mỗi bộ blouse đăng ký sẽ tính kèm 1 mũ.</div>
+        </div>
+        <div><label>Số lượng</label><select id="q_blouse" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div><label>Loại blouse</label><select id="type_blouse"><option>Nam</option><option>Nữ</option></select></div>
         <div><label>Size</label><select id="sz_blouse"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
       </div>
-      <details class="guide"><summary>Xem bảng size blouse Nam/Nữ</summary><div class="split">
-        <div><div class="gtitle">Blouse Nam</div><div class="guidebox"><table><tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr><tr><td>S</td><td>158–164 cm</td><td>50–55 kg</td></tr><tr><td>M</td><td>160–168 cm</td><td>55–62 kg</td></tr><tr><td>L</td><td>164–172 cm</td><td>62–68 kg</td></tr><tr><td>XL</td><td>166–176 cm</td><td>68–75 kg</td></tr><tr><td>XXL</td><td>170–180 cm</td><td>75–82 kg</td></tr></table></div></div>
-        <div><div class="gtitle">Blouse Nữ</div><div class="guidebox"><table><tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr><tr><td>S</td><td>152–158 cm</td><td>42–46 kg</td></tr><tr><td>M</td><td>154–160 cm</td><td>46–53 kg</td></tr><tr><td>L</td><td>156–162 cm</td><td>53–57 kg</td></tr><tr><td>XL</td><td>160–166 cm</td><td>57–62 kg</td></tr><tr><td>XXL</td><td>162–168 cm</td><td>62–70 kg</td></tr></table></div></div>
-      </div><div class="mini" style="margin-top:8px">Bảng size chỉ mang tính chất tham khảo theo thông tin anh cung cấp.</div></details>
+
+      <details class="guide">
+        <summary>Xem bảng size blouse Nam/Nữ</summary>
+        <div class="split">
+          <div>
+            <div class="gtitle">Blouse Nam — đề xuất chọn size</div>
+            <div class="guidebox"><table>
+              <tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr>
+              <tr><td>S</td><td>158–164 cm</td><td>50–55 kg</td></tr>
+              <tr><td>M</td><td>160–168 cm</td><td>55–62 kg</td></tr>
+              <tr><td>L</td><td>164–172 cm</td><td>62–68 kg</td></tr>
+              <tr><td>XL</td><td>166–176 cm</td><td>68–75 kg</td></tr>
+              <tr><td>XXL</td><td>170–180 cm</td><td>75–82 kg</td></tr>
+            </table></div>
+          </div>
+          <div>
+            <div class="gtitle">Blouse Nữ — đề xuất chọn size</div>
+            <div class="guidebox"><table>
+              <tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr>
+              <tr><td>S</td><td>152–158 cm</td><td>42–46 kg</td></tr>
+              <tr><td>M</td><td>154–160 cm</td><td>46–53 kg</td></tr>
+              <tr><td>L</td><td>156–162 cm</td><td>53–57 kg</td></tr>
+              <tr><td>XL</td><td>160–166 cm</td><td>57–62 kg</td></tr>
+              <tr><td>XXL</td><td>162–168 cm</td><td>62–70 kg</td></tr>
+            </table></div>
+          </div>
+        </div>
+
+        <div class="split" style="margin-top:14px">
+          <div>
+            <div class="gtitle">Blouse Nam — thông số chi tiết (cm)</div>
+            <div class="guidebox"><table>
+              <tr><th>Thông số</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th></tr>
+              <tr><td>Ngực</td><td>86</td><td>90</td><td>92</td><td>94</td><td>96</td></tr>
+              <tr><td>Vai</td><td>42</td><td>44</td><td>44</td><td>46</td><td>48</td></tr>
+              <tr><td>Dài áo</td><td>92</td><td>95</td><td>98</td><td>100</td><td>105</td></tr>
+              <tr><td>Tay</td><td>24/55</td><td>24/56</td><td>25/58</td><td>25/60</td><td>25/60</td></tr>
+              <tr><td>Cửa tay</td><td>18</td><td>18</td><td>19</td><td>19</td><td>20</td></tr>
+            </table></div>
+          </div>
+          <div>
+            <div class="gtitle">Blouse Nữ — thông số chi tiết (cm)</div>
+            <div class="guidebox"><table>
+              <tr><th>Thông số</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th></tr>
+              <tr><td>Ngực</td><td>86</td><td>90</td><td>92</td><td>94</td><td>96</td></tr>
+              <tr><td>Eo</td><td>68</td><td>70</td><td>72</td><td>74</td><td>80</td></tr>
+              <tr><td>Mông</td><td>90</td><td>92</td><td>94</td><td>96</td><td>100</td></tr>
+              <tr><td>Vai</td><td>36</td><td>37</td><td>38</td><td>38</td><td>40</td></tr>
+              <tr><td>Dài áo</td><td>90</td><td>92</td><td>95</td><td>97</td><td>100</td></tr>
+              <tr><td>Tay</td><td>20/52</td><td>20/54</td><td>20/55</td><td>20/57</td><td>20/58</td></tr>
+              <tr><td>Cửa tay</td><td>16</td><td>16</td><td>16</td><td>17</td><td>17</td></tr>
+            </table></div>
+          </div>
+        </div>
+        <div class="mini" style="margin-top:8px">Bảng size mang tính chất tham khảo. Sinh viên tự đối chiếu số đo và lựa chọn size phù hợp.</div>
+      </details>
     </div>
 
     <div class="product">
       <div class="prow">
-        <div class="pname"><strong>Đồ thể dục</strong><div class="price">170.000đ / bộ</div></div>
-        <div><label>Số lượng</label><select id="q_sport" class="qty" data-name="Đồ thể dục" data-price="170000"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="pname"><strong>Đồ thể dục</strong><div class="price">170.000đ / bộ</div><div class="hint">Chọn size theo bảng chiều cao – cân nặng bên dưới.</div></div>
+        <div><label>Số lượng</label><select id="q_sport" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
         <div style="grid-column:span 2"><label>Size</label><select id="sz_sport"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
       </div>
-      <details class="guide"><summary>Xem bảng size đồ thể dục</summary><div class="guidebox"><table><tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr><tr><td>S</td><td>1m40–1m49</td><td>35–44 kg</td></tr><tr><td>M</td><td>1m50–1m58</td><td>45–55 kg</td></tr><tr><td>L</td><td>1m59–1m69</td><td>56–66 kg</td></tr><tr><td>XL</td><td>1m70–1m80</td><td>67–77 kg</td></tr><tr><td>XXL</td><td>1m81–1m90</td><td>78–95 kg</td></tr></table></div></details>
+      <details class="guide">
+        <summary>Xem bảng size đồ thể dục</summary>
+        <div class="guidebox"><table>
+          <tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr>
+          <tr><td>S</td><td>1m40–1m49</td><td>35–44 kg</td></tr>
+          <tr><td>M</td><td>1m50–1m58</td><td>45–55 kg</td></tr>
+          <tr><td>L</td><td>1m59–1m69</td><td>56–66 kg</td></tr>
+          <tr><td>XL</td><td>1m70–1m80</td><td>67–77 kg</td></tr>
+          <tr><td>XXL</td><td>1m81–1m90</td><td>78–95 kg</td></tr>
+        </table></div>
+      </details>
     </div>
 
-    <div class="product"><div class="prow"><div class="pname"><strong>Dây đeo thẻ sinh viên</strong><div class="price">22.000đ / thẻ</div><div class="hint">Chỉ có 1 loại.</div></div><div><label>Số lượng</label><select id="q_lanyard" class="qty" data-name="Dây đeo thẻ" data-price="22000"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="grid-column:span 2"><label>Loại</label><input value="Tiêu chuẩn" disabled></div></div></div>
+    <div class="product">
+      <div class="prow">
+        <div class="pname"><strong>Dây đeo thẻ sinh viên</strong><div class="price">22.000đ / cái</div><div class="hint">Chỉ có 1 loại.</div></div>
+        <div><label>Số lượng</label><select id="q_lanyard" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div style="grid-column:span 2"><label>Loại</label><input value="Tiêu chuẩn" disabled></div>
+      </div>
+    </div>
 
-    <div class="product"><div class="prow"><div class="pname"><strong>Áo Đoàn</strong><div class="price pending">Chưa cập nhật giá</div><div class="hint">Chưa có bảng size chính thức.</div></div><div><label>Số lượng</label><select id="q_union" class="qty" data-name="Áo Đoàn" data-price=""><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="grid-column:span 2"><label>Size dự kiến</label><select id="sz_union"><option>Chưa xác định</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div></div></div>
+    <div class="product">
+      <div class="prow">
+        <div class="pname"><strong>Áo Đoàn</strong><div class="price">75.000đ / cái</div><div class="hint">Hiện chưa có bảng size tham khảo chính thức.</div></div>
+        <div><label>Số lượng</label><select id="q_union" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div style="grid-column:span 2"><label>Size đăng ký</label><select id="sz_union"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+      </div>
+    </div>
 
-    <div class="totalbar"><div><div class="mini">TẠM TÍNH CÁC MÓN ĐÃ CÓ GIÁ</div><div class="num" id="liveTotal">0đ</div></div><div class="mini" id="liveNote">Chưa chọn sản phẩm</div></div>
-    <div class="warning hidden" id="missingPrice">Bạn đang chọn sản phẩm chưa có giá. Hệ thống sẽ chưa tạo QR cho đến khi giá được cập nhật.</div>
+    <div class="totalbar">
+      <div><div class="mini">TẠM TÍNH</div><div class="num" id="liveTotal">0đ</div></div>
+      <div class="mini" id="liveNote">Chưa chọn sản phẩm</div>
+    </div>
     <div class="actions"><button class="primary" onclick="go2()">Tiếp tục thanh toán →</button></div>
   </section>
 
   <section class="card hidden" id="step2">
-    <div class="summary"><div><h2 class="section-title">Bước 2 — Kiểm tra đơn đăng ký</h2><div id="personReview"></div><div id="orderLines" style="margin-top:12px"></div><div class="totalbox"><div class="mini">TỔNG THANH TOÁN</div><div class="big" id="totalText">0đ</div><div class="mini">Mã đăng ký: <strong id="orderCode"></strong></div></div><div class="info">QR bên phải là VietQR thật, đã gắn đúng tài khoản TPBank, số tiền và nội dung chuyển khoản của đơn.</div></div>
-      <div class="qrbox"><div style="font-weight:950;margin-bottom:10px">QUÉT QR THANH TOÁN</div><img id="qr" alt="VietQR"><div class="bank"><div class="bankrow"><span>Ngân hàng</span><strong>TPBank</strong></div><div class="bankrow"><span>Số tài khoản</span><strong>10001778727</strong></div><div class="bankrow"><span>Chủ tài khoản</span><strong>HOANG LE PHI BACH</strong></div><div class="bankrow"><span>Nội dung</span><strong id="transferContent"></strong></div></div></div>
+    <div class="summary">
+      <div>
+        <h2 class="section-title">Bước 2 — Kiểm tra đơn đăng ký</h2>
+        <div id="personReview"></div>
+        <div id="orderLines" style="margin-top:12px"></div>
+        <div class="totalbox">
+          <div class="mini">TỔNG THANH TOÁN</div>
+          <div class="big" id="totalText">0đ</div>
+          <div class="mini">Mã đăng ký: <strong class="order-code" id="orderCode"></strong></div>
+        </div>
+        <div class="warning"><strong>Lưu ý:</strong> QR sử dụng tài khoản nhận tiền thật. Chỉ thực hiện chuyển khoản khi bạn chắc chắn các thông tin đăng ký, số lượng và size ở trên là chính xác.</div>
+      </div>
+
+      <div class="qrbox">
+        <div style="font-weight:950;margin-bottom:10px">QUÉT QR THANH TOÁN</div>
+        <img id="qr" alt="VietQR thanh toán">
+        <div class="bank">
+          <div class="bankrow"><span>Ngân hàng</span><strong>TPBank</strong></div>
+          <div class="bankrow"><span>Số tài khoản</span><span><strong>10001778727</strong> <button class="copy" onclick="copyText('10001778727',this)">Copy</button></span></div>
+          <div class="bankrow"><span>Chủ tài khoản</span><strong>HOANG LE PHI BACH</strong></div>
+          <div class="bankrow"><span>Số tiền</span><strong id="bankAmount">0đ</strong></div>
+          <div class="bankrow"><span>Nội dung CK</span><span><strong class="order-code" id="transferContent"></strong> <button class="copy" onclick="copyText(state.code,this)">Copy</button></span></div>
+        </div>
+        <div class="info">Vui lòng chuyển <strong>đúng số tiền</strong> và giữ nguyên <strong>nội dung chuyển khoản</strong> để thuận tiện đối soát.</div>
+      </div>
     </div>
-    <div class="actions"><button class="secondary" onclick="setStep(1)">← Sửa đăng ký</button><button class="primary" onclick="setStep(3)">Tôi đã thanh toán →</button></div>
+    <div class="actions"><button class="secondary" onclick="back1()">← Quay lại chỉnh sửa</button><button class="primary" onclick="go3()">Tôi đã thanh toán →</button></div>
   </section>
 
-  <section class="card hidden" id="step3"><h2 class="section-title">Bước 3 — Tải minh chứng chuyển khoản</h2><div class="upload"><div style="font-size:34px">📎</div><div style="font-weight:900;margin:7px 0">Chọn ảnh chụp màn hình chuyển khoản</div><input id="proof" type="file" accept="image/*" onchange="previewFile()" style="max-width:430px"><div><img id="preview" class="preview" alt="Minh chứng"></div></div><div class="warning">Hiện website đã tạo QR thanh toán thật. Phần lưu ảnh vào Google Drive/Sheets và gửi email thật cần kết nối backend Google Apps Script; bản này mới kiểm tra ảnh trên trình duyệt.</div><div style="margin-top:16px"><label><input id="confirm" type="checkbox" style="width:auto;margin-right:8px"> Tôi xác nhận đã chuyển đúng số tiền, đúng nội dung và thông tin đăng ký.</label></div><div class="actions"><button class="secondary" onclick="setStep(2)">← Quay lại</button><button class="primary" onclick="finish()">Hoàn tất đăng ký</button></div></section>
+  <section class="card hidden" id="step3">
+    <h2 class="section-title">Bước 3 — Tải minh chứng chuyển khoản</h2>
+    <div class="upload">
+      <div style="font-size:34px">📎</div>
+      <div style="font-weight:900;margin:8px 0">Chọn ảnh chụp màn hình giao dịch</div>
+      <input id="proof" type="file" accept="image/*" onchange="previewFile()" style="max-width:460px">
+      <div class="mini" style="margin-top:8px">Ảnh JPG/PNG, tối đa 8 MB.</div>
+      <div><img id="preview" class="preview" alt="Xem trước minh chứng"></div>
+    </div>
 
-  <section class="card hidden" id="done"><div style="text-align:center"><div class="check">✓</div><h2>Đã hoàn tất bước kiểm tra!</h2><div class="sub">Thông tin xác nhận mô phỏng bên dưới sẽ là nội dung email gửi cho sinh viên khi nối backend.</div><div class="emailmock"><div class="mini">EMAIL XÁC NHẬN</div><h3>Xác nhận đăng ký trang phục & vật phẩm</h3><div id="emailBody"></div></div><div class="actions" style="justify-content:center"><button class="secondary" onclick="location.reload()">Tạo đăng ký mới</button></div></div></section>
+    <div class="confirmline"><label><input type="checkbox" id="confirm"><span>Tôi xác nhận thông tin hành chính, sản phẩm, size, số lượng và số tiền chuyển khoản là chính xác.</span></label></div>
+    <div class="warning"><strong>Phiên bản hiện tại:</strong> phần tải minh chứng mới đang ở chế độ xem trước trên trình duyệt. Ảnh chưa được lưu vào Google Drive/Google Sheet và email chưa được gửi thật cho tới khi kết nối hệ thống Google ở bước triển khai cuối.</div>
+    <div class="actions"><button class="secondary" onclick="back2()">← Quay lại QR</button><button class="primary" onclick="finish()">Hoàn tất kiểm tra</button></div>
+  </section>
+
+  <section class="card hidden" id="done">
+    <div class="success">
+      <div class="check">✓</div>
+      <h2>Đã tổng hợp thông tin đăng ký</h2>
+      <div class="sub">Dưới đây là nội dung xác nhận dự kiến gửi đến email sinh viên khi hệ thống Google được kết nối.</div>
+      <div class="emailmock">
+        <div class="mini">NỘI DUNG EMAIL XÁC NHẬN DỰ KIẾN</div>
+        <h3 style="margin:6px 0 12px">Xác nhận đăng ký trang phục & vật phẩm sinh viên</h3>
+        <div id="emailBody"></div>
+      </div>
+      <div class="actions" style="justify-content:center"><button class="secondary" onclick="location.reload()">Tạo đăng ký mới</button></div>
+    </div>
+  </section>
+
+  <div class="footer-note">Form đăng ký trang phục sinh viên • Vui lòng kiểm tra kỹ trước khi thanh toán</div>
 </div>
-<script>
-const bank={bin:'970423',account:'10001778727',name:'HOANG LE PHI BACH'};
-let state={total:0,code:'',lines:[],hasMissing:false};
-const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
-function validatePerson(){for(const id of ['name','studentId','cccd','className','phone','email']){const e=document.getElementById(id);if(!e.value.trim()){alert('Vui lòng nhập đầy đủ thông tin bắt buộc.');e.focus();return false}}const cccdVal=document.getElementById('cccd').value.replace(/\s/g,'');if(!/^\d{12}$/.test(cccdVal)){alert('Số căn cước công dân cần đủ 12 chữ số.');document.getElementById('cccd').focus();return false}if(!document.getElementById('email').value.includes('@')){alert('Email chưa đúng định dạng.');return false}return true}
-function collect(){state.total=0;state.lines=[];state.hasMissing=false;
-  const add=(id,name,size,type)=>{const el=document.getElementById(id),qty=+el.value,raw=el.dataset.price;if(qty<=0)return;const price=raw?+raw:null;if(price===null)state.hasMissing=true;else state.total+=qty*price;state.lines.push({name,qty,price,size:size||'',type:type||''})};
-  add('q_blouse','Áo blouse',document.getElementById('sz_blouse').value,document.getElementById('type_blouse').value);
-  add('q_sport','Đồ thể dục',document.getElementById('sz_sport').value,'');
-  add('q_lanyard','Dây đeo thẻ','Tiêu chuẩn','');
-  add('q_union','Áo Đoàn',document.getElementById('sz_union').value,'');
-}
-function refresh(){collect();document.getElementById('liveTotal').textContent=money(state.total);document.getElementById('liveNote').textContent=state.lines.length?`${state.lines.length} nhóm sản phẩm đã chọn`:'Chưa chọn sản phẩm';document.getElementById('missingPrice').classList.toggle('hidden',!state.hasMissing)}
-document.querySelectorAll('.qty').forEach(x=>x.addEventListener('change',refresh));
-function setStep(n){['step1','step2','step3','done'].forEach(id=>document.getElementById(id).classList.add('hidden'));if(n===1)step1.classList.remove('hidden');if(n===2)step2.classList.remove('hidden');if(n===3)step3.classList.remove('hidden');if(n===4)done.classList.remove('hidden');['s1','s2','s3'].forEach((id,i)=>{const e=document.getElementById(id);e.classList.remove('active','done');if(i+1===n)e.classList.add('active');if(i+1<n||n===4)e.classList.add('done')});scrollTo({top:0,behavior:'smooth'})}
-function go2(){if(!validatePerson())return;collect();if(!state.lines.length){alert('Vui lòng chọn ít nhất 1 sản phẩm.');return}if(state.hasMissing){const missing=state.lines.filter(x=>x.price===null).map(x=>x.name).join(', ');alert(`Chưa thể tạo QR chính xác vì chưa có giá: ${missing}.`);return}if(!state.code){const ms=document.getElementById('studentId').value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().slice(-10);state.code=`DUMTP${ms}${Math.floor(100+Math.random()*900)}`.slice(0,25)}
-  personReview.innerHTML=`<div class="line"><span>Họ tên</span><strong>${name.value}</strong></div><div class="line"><span>MSSV</span><strong>${studentId.value}</strong></div><div class="line"><span>CCCD</span><strong>${cccd.value}</strong></div><div class="line"><span>Lớp</span><strong>${className.value}</strong></div><div class="line"><span>Số điện thoại</span><strong>${phone.value}</strong></div><div class="line"><span>Email</span><strong>${email.value}</strong></div>`;
-  orderLines.innerHTML=state.lines.map(x=>`<div class="line"><span><strong>${x.name}</strong><br><span class="mini">${x.qty} × ${money(x.price)}${x.type?' • '+x.type:''}${x.size?' • '+x.size:''}</span></span><strong>${money(x.qty*x.price)}</strong></div>`).join('');
-  totalText.textContent=money(state.total);orderCode.textContent=state.code;transferContent.textContent=state.code;
-  qr.src=`https://img.vietqr.io/image/${bank.bin}-${bank.account}-compact2.png?amount=${state.total}&addInfo=${encodeURIComponent(state.code)}&accountName=${encodeURIComponent(bank.name)}`;setStep(2)}
-function previewFile(){const f=proof.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{preview.src=e.target.result;preview.style.display='inline-block'};r.readAsDataURL(f)}
-function finish(){if(!proof.files[0]){alert('Vui lòng tải ảnh minh chứng chuyển khoản.');return}if(!confirm.checked){alert('Vui lòng tick xác nhận trước khi hoàn tất.');return}const list=state.lines.map(x=>`<li>${x.name}: <strong>${x.qty}</strong>${x.type?' — '+x.type:''}${x.size?' — '+x.size:''}</li>`).join('');emailBody.innerHTML=`<p>Chào <strong>${name.value}</strong>,</p><p>Hệ thống đã ghi nhận đăng ký của bạn.</p><p><strong>Mã đăng ký:</strong> ${state.code}</p><p><strong>MSSV:</strong> ${studentId.value}<br><strong>CCCD:</strong> ${cccd.value}<br><strong>Lớp:</strong> ${className.value}</p><ul>${list}</ul><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p>Ngân hàng nhận: TPBank — 10001778727 — HOANG LE PHI BACH.</p><p>Email xác nhận sẽ gửi tới: ${email.value}</p>`;setStep(4)}
-refresh();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
