@@ -24,13 +24,14 @@
   <div class="steps"><div class="step active" id="s1">1. Thông tin & đăng ký</div><div class="step" id="s2">2. Tổng tiền & QR</div><div class="step" id="s3">3. Minh chứng & xác nhận</div></div>
 
   <section class="card" id="step1">
-    <h2 class="section-title">Bước 1 — Thông tin cá nhân</h2>
+    <h2 class="section-title">Bước 1 — Thông tin hành chính</h2>
     <div class="grid">
       <div><label>Họ và tên *</label><input id="name" placeholder="Nguyễn Văn A"></div>
       <div><label>Mã sinh viên *</label><input id="studentId" placeholder="VD: 22123456"></div>
+      <div><label>Số căn cước công dân *</label><input id="cccd" inputmode="numeric" maxlength="12" placeholder="12 số CCCD"></div>
       <div><label>Lớp *</label><input id="className" placeholder="VD: Y6A"></div>
       <div><label>Số điện thoại *</label><input id="phone" placeholder="09xxxxxxxx"></div>
-      <div class="full"><label>Email nhận xác nhận *</label><input id="email" type="email" placeholder="tenban@gmail.com"></div>
+      <div><label>Email nhận xác nhận *</label><input id="email" type="email" placeholder="tenban@gmail.com"></div>
     </div>
 
     <h2 class="section-title" style="margin-top:28px">Sản phẩm đăng ký</h2>
@@ -81,7 +82,7 @@
 const bank={bin:'970423',account:'10001778727',name:'HOANG LE PHI BACH'};
 let state={total:0,code:'',lines:[],hasMissing:false};
 const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
-function validatePerson(){for(const id of ['name','studentId','className','phone','email']){const e=document.getElementById(id);if(!e.value.trim()){alert('Vui lòng nhập đầy đủ thông tin bắt buộc.');e.focus();return false}}if(!document.getElementById('email').value.includes('@')){alert('Email chưa đúng định dạng.');return false}return true}
+function validatePerson(){for(const id of ['name','studentId','cccd','className','phone','email']){const e=document.getElementById(id);if(!e.value.trim()){alert('Vui lòng nhập đầy đủ thông tin bắt buộc.');e.focus();return false}}const cccdVal=document.getElementById('cccd').value.replace(/\s/g,'');if(!/^\d{12}$/.test(cccdVal)){alert('Số căn cước công dân cần đủ 12 chữ số.');document.getElementById('cccd').focus();return false}if(!document.getElementById('email').value.includes('@')){alert('Email chưa đúng định dạng.');return false}return true}
 function collect(){state.total=0;state.lines=[];state.hasMissing=false;
   const add=(id,name,size,type)=>{const el=document.getElementById(id),qty=+el.value,raw=el.dataset.price;if(qty<=0)return;const price=raw?+raw:null;if(price===null)state.hasMissing=true;else state.total+=qty*price;state.lines.push({name,qty,price,size:size||'',type:type||''})};
   add('q_blouse','Áo blouse',document.getElementById('sz_blouse').value,document.getElementById('type_blouse').value);
@@ -93,12 +94,12 @@ function refresh(){collect();document.getElementById('liveTotal').textContent=mo
 document.querySelectorAll('.qty').forEach(x=>x.addEventListener('change',refresh));
 function setStep(n){['step1','step2','step3','done'].forEach(id=>document.getElementById(id).classList.add('hidden'));if(n===1)step1.classList.remove('hidden');if(n===2)step2.classList.remove('hidden');if(n===3)step3.classList.remove('hidden');if(n===4)done.classList.remove('hidden');['s1','s2','s3'].forEach((id,i)=>{const e=document.getElementById(id);e.classList.remove('active','done');if(i+1===n)e.classList.add('active');if(i+1<n||n===4)e.classList.add('done')});scrollTo({top:0,behavior:'smooth'})}
 function go2(){if(!validatePerson())return;collect();if(!state.lines.length){alert('Vui lòng chọn ít nhất 1 sản phẩm.');return}if(state.hasMissing){const missing=state.lines.filter(x=>x.price===null).map(x=>x.name).join(', ');alert(`Chưa thể tạo QR chính xác vì chưa có giá: ${missing}.`);return}if(!state.code){const ms=document.getElementById('studentId').value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().slice(-10);state.code=`DUMTP${ms}${Math.floor(100+Math.random()*900)}`.slice(0,25)}
-  personReview.innerHTML=`<div class="line"><span>Họ tên</span><strong>${name.value}</strong></div><div class="line"><span>MSSV</span><strong>${studentId.value}</strong></div><div class="line"><span>Lớp</span><strong>${className.value}</strong></div><div class="line"><span>Email</span><strong>${email.value}</strong></div>`;
+  personReview.innerHTML=`<div class="line"><span>Họ tên</span><strong>${name.value}</strong></div><div class="line"><span>MSSV</span><strong>${studentId.value}</strong></div><div class="line"><span>CCCD</span><strong>${cccd.value}</strong></div><div class="line"><span>Lớp</span><strong>${className.value}</strong></div><div class="line"><span>Số điện thoại</span><strong>${phone.value}</strong></div><div class="line"><span>Email</span><strong>${email.value}</strong></div>`;
   orderLines.innerHTML=state.lines.map(x=>`<div class="line"><span><strong>${x.name}</strong><br><span class="mini">${x.qty} × ${money(x.price)}${x.type?' • '+x.type:''}${x.size?' • '+x.size:''}</span></span><strong>${money(x.qty*x.price)}</strong></div>`).join('');
   totalText.textContent=money(state.total);orderCode.textContent=state.code;transferContent.textContent=state.code;
   qr.src=`https://img.vietqr.io/image/${bank.bin}-${bank.account}-compact2.png?amount=${state.total}&addInfo=${encodeURIComponent(state.code)}&accountName=${encodeURIComponent(bank.name)}`;setStep(2)}
 function previewFile(){const f=proof.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{preview.src=e.target.result;preview.style.display='inline-block'};r.readAsDataURL(f)}
-function finish(){if(!proof.files[0]){alert('Vui lòng tải ảnh minh chứng chuyển khoản.');return}if(!confirm.checked){alert('Vui lòng tick xác nhận trước khi hoàn tất.');return}const list=state.lines.map(x=>`<li>${x.name}: <strong>${x.qty}</strong>${x.type?' — '+x.type:''}${x.size?' — '+x.size:''}</li>`).join('');emailBody.innerHTML=`<p>Chào <strong>${name.value}</strong>,</p><p>Hệ thống đã ghi nhận đăng ký của bạn.</p><p><strong>Mã đăng ký:</strong> ${state.code}</p><ul>${list}</ul><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p>Ngân hàng nhận: TPBank — 10001778727 — HOANG LE PHI BACH.</p><p>Email xác nhận sẽ gửi tới: ${email.value}</p>`;setStep(4)}
+function finish(){if(!proof.files[0]){alert('Vui lòng tải ảnh minh chứng chuyển khoản.');return}if(!confirm.checked){alert('Vui lòng tick xác nhận trước khi hoàn tất.');return}const list=state.lines.map(x=>`<li>${x.name}: <strong>${x.qty}</strong>${x.type?' — '+x.type:''}${x.size?' — '+x.size:''}</li>`).join('');emailBody.innerHTML=`<p>Chào <strong>${name.value}</strong>,</p><p>Hệ thống đã ghi nhận đăng ký của bạn.</p><p><strong>Mã đăng ký:</strong> ${state.code}</p><p><strong>MSSV:</strong> ${studentId.value}<br><strong>CCCD:</strong> ${cccd.value}<br><strong>Lớp:</strong> ${className.value}</p><ul>${list}</ul><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p>Ngân hàng nhận: TPBank — 10001778727 — HOANG LE PHI BACH.</p><p>Email xác nhận sẽ gửi tới: ${email.value}</p>`;setStep(4)}
 refresh();
 </script>
 </body>
