@@ -53,11 +53,19 @@ function validatePerson(){
  return true;
 }
 
+function normalizeCodePart(value){
+ return clean(value)
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'')
+  .replace(/Đ/g,'D').replace(/đ/g,'d')
+  .replace(/[^A-Za-z0-9]/g,'')
+  .toUpperCase();
+}
+
 function buildCode(){
- if(state.code)return state.code;
- const sid=clean($('studentId').value).replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,12)||'SV';
- const suffix=String(Math.floor(1000+Math.random()*9000));
- state.code=('SV'+sid+suffix).slice(0,24);
+ const cls=normalizeCodePart($('className').value)||'LOP';
+ const sid=normalizeCodePart($('studentId').value)||'MSSV';
+ state.code=`${cls}-${sid}`.slice(0,30);
  return state.code;
 }
 
@@ -89,8 +97,9 @@ function previewFile(){
 function finish(){
  if(!$('proof').files[0]){alert('Vui lòng tải ảnh minh chứng chuyển khoản.');return}
  if(!$('confirm').checked){alert('Vui lòng xác nhận thông tin trước khi hoàn tất.');return}
+ buildCode();
  const items=state.lines.map(x=>`<li><strong>${x.name}:</strong> ${x.qty}${x.meta?' — '+x.meta:''} — ${money(x.subtotal)}</li>`).join('');
- $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Mã đăng ký:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
+ $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Nội dung chuyển khoản:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
  setStep(4);
 }
 
@@ -101,5 +110,7 @@ async function copyText(text,btn){
 document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('.qty').forEach(el=>el.addEventListener('change',compute));
  $('type_blouse').addEventListener('change',compute);$('sz_blouse').addEventListener('change',compute);$('sz_sport').addEventListener('change',compute);$('sz_union').addEventListener('change',compute);
+ $('className').addEventListener('input',()=>state.code='');
+ $('studentId').addEventListener('input',()=>state.code='');
  updateControlState();compute();
 });
