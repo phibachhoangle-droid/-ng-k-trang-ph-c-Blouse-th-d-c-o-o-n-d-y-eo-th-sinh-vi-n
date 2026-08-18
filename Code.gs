@@ -54,6 +54,7 @@ function saveRegistration_(data) {
   const qUnion = qty_(data.qUnion);
 
   if (qBlouse > 0 && !clean_(data.blouseSize)) throw new Error('Thiếu size blouse đã thử trực tiếp');
+  if (qUnion > 0 && !clean_(data.unionSize)) throw new Error('Thiếu size áo Đoàn đã thử trực tiếp');
 
   const blouseMoney = qBlouse * PRICES.blouse;
   const sportMoney = qSport * PRICES.sport;
@@ -130,7 +131,7 @@ function sendConfirmation_(data, transferCode, total, x) {
   if (x.qBlouse) lines.push(`- Bộ blouse + mũ: ${x.qBlouse} | ${clean_(data.blouseType)} | Size ${clean_(data.blouseSize)} (đã thử trực tiếp) | ${money_(x.blouseMoney)}`);
   if (x.qSport) lines.push(`- Đồ thể dục: ${x.qSport} | Size ${clean_(data.sportSize)} | ${money_(x.sportMoney)}`);
   if (x.qLanyard) lines.push(`- Dây đeo thẻ sinh viên: ${x.qLanyard} | ${money_(x.lanyardMoney)}`);
-  if (x.qUnion) lines.push(`- Áo Đoàn: ${x.qUnion} | Size ${clean_(data.unionSize)} | ${money_(x.unionMoney)}`);
+  if (x.qUnion) lines.push(`- Áo Đoàn: ${x.qUnion} | Size ${clean_(data.unionSize)} (đã thử trực tiếp) | ${money_(x.unionMoney)}`);
 
   const subject = `[XÁC NHẬN] Đăng ký trang phục - ${transferCode}`;
   const body = [
