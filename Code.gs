@@ -53,6 +53,8 @@ function saveRegistration_(data) {
   const qLanyard = qty_(data.qLanyard);
   const qUnion = qty_(data.qUnion);
 
+  if (qBlouse > 0 && !clean_(data.blouseSize)) throw new Error('Thiếu size blouse đã thử trực tiếp');
+
   const blouseMoney = qBlouse * PRICES.blouse;
   const sportMoney = qSport * PRICES.sport;
   const lanyardMoney = qLanyard * PRICES.lanyard;
@@ -85,7 +87,7 @@ function saveRegistration_(data) {
     clean_(data.phone),
     clean_(data.email),
     qBlouse ? clean_(data.blouseType) : '',
-    '', // Size blouse được thử trực tiếp, không thu trên form
+    qBlouse ? clean_(data.blouseSize) : '',
     qBlouse,
     blouseMoney,
     qSport,
@@ -125,7 +127,7 @@ function sendConfirmation_(data, transferCode, total, x) {
   if (!email) return;
 
   const lines = [];
-  if (x.qBlouse) lines.push(`- Bộ blouse + mũ: ${x.qBlouse} | ${clean_(data.blouseType)} | Size thử trực tiếp | ${money_(x.blouseMoney)}`);
+  if (x.qBlouse) lines.push(`- Bộ blouse + mũ: ${x.qBlouse} | ${clean_(data.blouseType)} | Size ${clean_(data.blouseSize)} (đã thử trực tiếp) | ${money_(x.blouseMoney)}`);
   if (x.qSport) lines.push(`- Đồ thể dục: ${x.qSport} | Size ${clean_(data.sportSize)} | ${money_(x.sportMoney)}`);
   if (x.qLanyard) lines.push(`- Dây đeo thẻ sinh viên: ${x.qLanyard} | ${money_(x.lanyardMoney)}`);
   if (x.qUnion) lines.push(`- Áo Đoàn: ${x.qUnion} | Size ${clean_(data.unionSize)} | ${money_(x.unionMoney)}`);
@@ -142,7 +144,6 @@ function sendConfirmation_(data, transferCode, total, x) {
     '',
     ...lines,
     '',
-    'Lưu ý: Size blouse sẽ được thử trực tiếp để chọn đúng size.',
     `TỔNG THANH TOÁN: ${money_(total)}`,
     '',
     'Trạng thái hiện tại: Chờ kiểm tra minh chứng.',
