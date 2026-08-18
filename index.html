@@ -12,7 +12,7 @@
     <div class="logo">SV</div>
     <div>
       <h1>Đăng ký trang phục & vật phẩm sinh viên</h1>
-      <div class="sub">Khai thông tin → chọn sản phẩm → thanh toán theo QR → gửi minh chứng</div>
+      <div class="sub">Khai thông tin → chọn sản phẩm & size → thanh toán theo QR → gửi minh chứng</div>
     </div>
   </div>
 
@@ -44,10 +44,11 @@
           <div class="price">375.000đ / bộ</div>
           <span class="tag">Đã gồm mũ</span>
           <div class="hint">Bộ blouse 350.000đ + mũ 25.000đ. Mỗi bộ blouse đăng ký sẽ tính kèm 1 mũ.</div>
-          <div class="info" style="margin-top:10px"><strong>Size blouse sẽ được thử trực tiếp</strong> để đảm bảo mặc vừa và chọn đúng size. Form không yêu cầu đăng ký size blouse online.</div>
+          <div class="info" style="margin-top:10px"><strong>Vui lòng thử blouse trực tiếp trước khi đăng ký.</strong> Sau khi thử vừa, chọn đúng size đã thử ở ô bên cạnh để nhà trường thống kê số lượng theo size.</div>
         </div>
         <div><label>Số lượng</label><select id="q_blouse" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-        <div style="grid-column:span 2"><label>Loại blouse</label><select id="type_blouse"><option>Nam</option><option>Nữ</option></select></div>
+        <div><label>Loại blouse</label><select id="type_blouse"><option>Nam</option><option>Nữ</option></select></div>
+        <div><label>Size đã thử</label><select id="sz_blouse"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
       </div>
     </div>
 
@@ -104,7 +105,7 @@
           <div class="big" id="totalText">0đ</div>
           <div class="mini">Mã đăng ký: <strong class="order-code" id="orderCode"></strong></div>
         </div>
-        <div class="warning"><strong>Lưu ý:</strong> QR sử dụng tài khoản nhận tiền thật. Chỉ thực hiện chuyển khoản khi bạn chắc chắn thông tin, số lượng và các size cần đăng ký là chính xác. Size blouse sẽ được thử trực tiếp.</div>
+        <div class="warning"><strong>Lưu ý:</strong> QR sử dụng tài khoản nhận tiền thật. Chỉ thực hiện chuyển khoản khi bạn chắc chắn thông tin, số lượng và size đã chọn là chính xác. Với blouse, size phải là size đã thử trực tiếp.</div>
       </div>
 
       <div class="qrbox">
@@ -133,8 +134,8 @@
       <div><img id="preview" class="preview" alt="Xem trước minh chứng"></div>
     </div>
 
-    <div class="confirmline"><label><input type="checkbox" id="confirm"><span>Tôi xác nhận thông tin hành chính, sản phẩm, số lượng, các size cần đăng ký và số tiền chuyển khoản là chính xác.</span></label></div>
-    <div class="warning"><strong>Lưu ý:</strong> size blouse không đăng ký trên form và sẽ được thử trực tiếp.</div>
+    <div class="confirmline"><label><input type="checkbox" id="confirm"><span>Tôi xác nhận thông tin hành chính, sản phẩm, số lượng, size và số tiền chuyển khoản là chính xác.</span></label></div>
+    <div class="warning"><strong>Blouse:</strong> size đã chọn trong form phải là size bạn đã thử trực tiếp và xác nhận mặc vừa.</div>
     <div class="actions"><button class="secondary" onclick="back2()">← Quay lại QR</button><button class="primary" onclick="finish()">Hoàn tất kiểm tra</button></div>
   </section>
 
