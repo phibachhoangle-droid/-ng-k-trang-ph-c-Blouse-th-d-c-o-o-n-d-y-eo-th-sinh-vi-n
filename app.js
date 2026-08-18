@@ -1,6 +1,6 @@
 const BANK={id:'TPB',name:'TPBank',account:'10001778727',owner:'HOANG LE PHI BACH'};
 const PRODUCTS={
- blouse:{qty:'q_blouse',name:'Bộ blouse + mũ',price:375000,type:'type_blouse'},
+ blouse:{qty:'q_blouse',name:'Bộ blouse + mũ',price:375000,size:'sz_blouse',type:'type_blouse'},
  sport:{qty:'q_sport',name:'Đồ thể dục',price:170000,size:'sz_sport'},
  lanyard:{qty:'q_lanyard',name:'Dây đeo thẻ sinh viên',price:22000},
  union:{qty:'q_union',name:'Áo Đoàn',price:75000,size:'sz_union'}
@@ -60,7 +60,7 @@ function setStep(n){
 }
 
 function updateControlState(){
- const b=+$('q_blouse').value>0;$('type_blouse').disabled=!b;
+ const b=+$('q_blouse').value>0;$('type_blouse').disabled=!b;$('sz_blouse').disabled=!b;
  const s=+$('q_sport').value>0;$('sz_sport').disabled=!s;
  const u=+$('q_union').value>0;$('sz_union').disabled=!u;
 }
@@ -91,6 +91,7 @@ function validatePerson(){
  if(!/^\d{12}$/.test(clean($('cccd').value))){alert('Số CCCD phải gồm đúng 12 chữ số.');$('cccd').focus();return false}
  const phone=clean($('phone').value).replace(/\s/g,'');if(!/^0?\d{9,10}$/.test(phone)){alert('Vui lòng kiểm tra lại số điện thoại.');$('phone').focus();return false}
  const email=clean($('email').value);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Email chưa đúng định dạng.');$('email').focus();return false}
+ if(+$('q_blouse').value>0 && !clean($('sz_blouse').value)){alert('Vui lòng chọn size blouse đã thử trực tiếp.');$('sz_blouse').focus();return false}
  return true;
 }
 
@@ -134,7 +135,7 @@ function finish(){
  if(!$('proof').files[0]){alert('Vui lòng tải ảnh minh chứng chuyển khoản.');return}
  if(!$('confirm').checked){alert('Vui lòng xác nhận thông tin trước khi hoàn tất.');return}
  const items=state.lines.map(x=>`<li><strong>${x.name}:</strong> ${x.qty}${x.meta?' — '+x.meta:''} — ${money(x.subtotal)}</li>`).join('');
- $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Nội dung chuyển khoản:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Ngành học:</strong> ${clean($('majorName').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Lưu ý:</strong> Size blouse sẽ được thử trực tiếp, không đăng ký trên form.</p><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
+ $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Nội dung chuyển khoản:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Ngành học:</strong> ${clean($('majorName').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Lưu ý:</strong> Size blouse trong đăng ký là size đã được thử trực tiếp.</p><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
  setStep(4);
 }
 
@@ -146,6 +147,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  setupAcademicFields();
  document.querySelectorAll('.qty').forEach(el=>el.addEventListener('change',compute));
  $('type_blouse').addEventListener('change',compute);
+ $('sz_blouse').addEventListener('change',compute);
  $('sz_sport').addEventListener('change',compute);
  $('sz_union').addEventListener('change',compute);
  $('studentId').addEventListener('input',()=>state.code='');
