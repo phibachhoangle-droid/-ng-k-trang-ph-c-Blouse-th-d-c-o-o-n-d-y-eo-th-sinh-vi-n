@@ -72,7 +72,7 @@ function compute(){
   if(q>0){
    let meta='';
    if(p.type) meta+=$(p.type).value;
-   if(p.size) meta+=(meta?' • ':'')+'Size '+$(p.size).value;
+   if(p.size && clean($(p.size).value)) meta+=(meta?' • ':'')+'Size '+$(p.size).value;
    const subtotal=q*p.price;
    state.total+=subtotal;
    state.lines.push({name:p.name,qty:q,price:p.price,subtotal,meta});
@@ -92,6 +92,7 @@ function validatePerson(){
  const phone=clean($('phone').value).replace(/\s/g,'');if(!/^0?\d{9,10}$/.test(phone)){alert('Vui lòng kiểm tra lại số điện thoại.');$('phone').focus();return false}
  const email=clean($('email').value);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Email chưa đúng định dạng.');$('email').focus();return false}
  if(+$('q_blouse').value>0 && !clean($('sz_blouse').value)){alert('Vui lòng chọn size blouse đã thử trực tiếp.');$('sz_blouse').focus();return false}
+ if(+$('q_union').value>0 && !clean($('sz_union').value)){alert('Vui lòng chọn size áo Đoàn đã thử trực tiếp.');$('sz_union').focus();return false}
  return true;
 }
 
@@ -135,7 +136,7 @@ function finish(){
  if(!$('proof').files[0]){alert('Vui lòng tải ảnh minh chứng chuyển khoản.');return}
  if(!$('confirm').checked){alert('Vui lòng xác nhận thông tin trước khi hoàn tất.');return}
  const items=state.lines.map(x=>`<li><strong>${x.name}:</strong> ${x.qty}${x.meta?' — '+x.meta:''} — ${money(x.subtotal)}</li>`).join('');
- $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Nội dung chuyển khoản:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Ngành học:</strong> ${clean($('majorName').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Lưu ý:</strong> Size blouse trong đăng ký là size đã được thử trực tiếp.</p><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
+ $('emailBody').innerHTML=`<p>Chào <strong>${clean($('name').value)}</strong>,</p><p>Thông tin đăng ký của bạn đã được tổng hợp như sau:</p><p><strong>Nội dung chuyển khoản:</strong> <span class="order-code">${state.code}</span></p><p><strong>Mã sinh viên:</strong> ${clean($('studentId').value)}<br><strong>CCCD:</strong> ${clean($('cccd').value)}<br><strong>Ngành học:</strong> ${clean($('majorName').value)}<br><strong>Lớp:</strong> ${clean($('className').value)}</p><ul>${items}</ul><p><strong>Lưu ý:</strong> Size blouse và áo Đoàn trong đăng ký là size đã được thử trực tiếp.</p><p><strong>Tổng thanh toán: ${money(state.total)}</strong></p><p class="mini">Email dự kiến gửi tới: ${clean($('email').value)}</p>`;
  setStep(4);
 }
 
