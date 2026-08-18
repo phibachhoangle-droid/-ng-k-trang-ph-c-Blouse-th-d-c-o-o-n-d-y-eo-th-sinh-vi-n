@@ -12,7 +12,7 @@
     <div class="logo">SV</div>
     <div>
       <h1>Đăng ký trang phục & vật phẩm sinh viên</h1>
-      <div class="sub">Khai thông tin → chọn số lượng & size → thanh toán theo QR → gửi minh chứng</div>
+      <div class="sub">Khai thông tin → chọn sản phẩm → thanh toán theo QR → gửi minh chứng</div>
     </div>
   </div>
 
@@ -27,13 +27,13 @@
     <div class="required-note">Các trường có dấu * là bắt buộc.</div>
     <div class="grid">
       <div><label>Họ và tên *</label><input id="name" autocomplete="name" placeholder="Nguyễn Văn A"></div>
-      <div><label>Mã sinh viên *</label><input id="studentId" placeholder="VD: 22123456"></div>
+      <div><label>Mã sinh viên *</label><input id="studentId" placeholder="VD: 2653011001"></div>
       <div><label>Số căn cước công dân *</label><input id="cccd" inputmode="numeric" maxlength="12" placeholder="Nhập đủ 12 số CCCD"></div>
-      <div><label>Lớp *</label><input id="className" placeholder="VD: Y6A"></div>
+      <div><label>Lớp *</label><input id="className" placeholder="Chọn ngành học trước"></div>
       <div><label>Số điện thoại *</label><input id="phone" inputmode="tel" autocomplete="tel" placeholder="09xxxxxxxx"></div>
       <div><label>Email nhận xác nhận *</label><input id="email" type="email" autocomplete="email" placeholder="tenban@gmail.com"></div>
     </div>
-    <div class="privacy">Vui lòng kiểm tra kỹ họ tên, mã sinh viên, CCCD và lớp trước khi sang bước thanh toán.</div>
+    <div class="privacy">Vui lòng kiểm tra kỹ họ tên, mã sinh viên, CCCD, ngành học và lớp trước khi sang bước thanh toán.</div>
 
     <h2 class="section-title products-title">Sản phẩm đăng ký</h2>
 
@@ -44,67 +44,11 @@
           <div class="price">375.000đ / bộ</div>
           <span class="tag">Đã gồm mũ</span>
           <div class="hint">Bộ blouse 350.000đ + mũ 25.000đ. Mỗi bộ blouse đăng ký sẽ tính kèm 1 mũ.</div>
+          <div class="info" style="margin-top:10px"><strong>Size blouse sẽ được thử trực tiếp</strong> để đảm bảo mặc vừa và chọn đúng size. Form không yêu cầu đăng ký size blouse online.</div>
         </div>
         <div><label>Số lượng</label><select id="q_blouse" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-        <div><label>Loại blouse</label><select id="type_blouse"><option>Nam</option><option>Nữ</option></select></div>
-        <div><label>Size</label><select id="sz_blouse"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+        <div style="grid-column:span 2"><label>Loại blouse</label><select id="type_blouse"><option>Nam</option><option>Nữ</option></select></div>
       </div>
-
-      <details class="guide">
-        <summary>Xem bảng size blouse Nam/Nữ</summary>
-        <div class="split">
-          <div>
-            <div class="gtitle">Blouse Nam — đề xuất chọn size</div>
-            <div class="guidebox"><table>
-              <tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr>
-              <tr><td>S</td><td>158–164 cm</td><td>50–55 kg</td></tr>
-              <tr><td>M</td><td>160–168 cm</td><td>55–62 kg</td></tr>
-              <tr><td>L</td><td>164–172 cm</td><td>62–68 kg</td></tr>
-              <tr><td>XL</td><td>166–176 cm</td><td>68–75 kg</td></tr>
-              <tr><td>XXL</td><td>170–180 cm</td><td>75–82 kg</td></tr>
-            </table></div>
-          </div>
-          <div>
-            <div class="gtitle">Blouse Nữ — đề xuất chọn size</div>
-            <div class="guidebox"><table>
-              <tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr>
-              <tr><td>S</td><td>152–158 cm</td><td>42–46 kg</td></tr>
-              <tr><td>M</td><td>154–160 cm</td><td>46–53 kg</td></tr>
-              <tr><td>L</td><td>156–162 cm</td><td>53–57 kg</td></tr>
-              <tr><td>XL</td><td>160–166 cm</td><td>57–62 kg</td></tr>
-              <tr><td>XXL</td><td>162–168 cm</td><td>62–70 kg</td></tr>
-            </table></div>
-          </div>
-        </div>
-
-        <div class="split" style="margin-top:14px">
-          <div>
-            <div class="gtitle">Blouse Nam — thông số chi tiết (cm)</div>
-            <div class="guidebox"><table>
-              <tr><th>Thông số</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th></tr>
-              <tr><td>Ngực</td><td>86</td><td>90</td><td>92</td><td>94</td><td>96</td></tr>
-              <tr><td>Vai</td><td>42</td><td>44</td><td>44</td><td>46</td><td>48</td></tr>
-              <tr><td>Dài áo</td><td>92</td><td>95</td><td>98</td><td>100</td><td>105</td></tr>
-              <tr><td>Tay</td><td>24/55</td><td>24/56</td><td>25/58</td><td>25/60</td><td>25/60</td></tr>
-              <tr><td>Cửa tay</td><td>18</td><td>18</td><td>19</td><td>19</td><td>20</td></tr>
-            </table></div>
-          </div>
-          <div>
-            <div class="gtitle">Blouse Nữ — thông số chi tiết (cm)</div>
-            <div class="guidebox"><table>
-              <tr><th>Thông số</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th></tr>
-              <tr><td>Ngực</td><td>86</td><td>90</td><td>92</td><td>94</td><td>96</td></tr>
-              <tr><td>Eo</td><td>68</td><td>70</td><td>72</td><td>74</td><td>80</td></tr>
-              <tr><td>Mông</td><td>90</td><td>92</td><td>94</td><td>96</td><td>100</td></tr>
-              <tr><td>Vai</td><td>36</td><td>37</td><td>38</td><td>38</td><td>40</td></tr>
-              <tr><td>Dài áo</td><td>90</td><td>92</td><td>95</td><td>97</td><td>100</td></tr>
-              <tr><td>Tay</td><td>20/52</td><td>20/54</td><td>20/55</td><td>20/57</td><td>20/58</td></tr>
-              <tr><td>Cửa tay</td><td>16</td><td>16</td><td>16</td><td>17</td><td>17</td></tr>
-            </table></div>
-          </div>
-        </div>
-        <div class="mini" style="margin-top:8px">Bảng size mang tính chất tham khảo. Sinh viên tự đối chiếu số đo và lựa chọn size phù hợp.</div>
-      </details>
     </div>
 
     <div class="product">
@@ -160,7 +104,7 @@
           <div class="big" id="totalText">0đ</div>
           <div class="mini">Mã đăng ký: <strong class="order-code" id="orderCode"></strong></div>
         </div>
-        <div class="warning"><strong>Lưu ý:</strong> QR sử dụng tài khoản nhận tiền thật. Chỉ thực hiện chuyển khoản khi bạn chắc chắn các thông tin đăng ký, số lượng và size ở trên là chính xác.</div>
+        <div class="warning"><strong>Lưu ý:</strong> QR sử dụng tài khoản nhận tiền thật. Chỉ thực hiện chuyển khoản khi bạn chắc chắn thông tin, số lượng và các size cần đăng ký là chính xác. Size blouse sẽ được thử trực tiếp.</div>
       </div>
 
       <div class="qrbox">
@@ -189,8 +133,8 @@
       <div><img id="preview" class="preview" alt="Xem trước minh chứng"></div>
     </div>
 
-    <div class="confirmline"><label><input type="checkbox" id="confirm"><span>Tôi xác nhận thông tin hành chính, sản phẩm, size, số lượng và số tiền chuyển khoản là chính xác.</span></label></div>
-    <div class="warning"><strong>Phiên bản hiện tại:</strong> phần tải minh chứng mới đang ở chế độ xem trước trên trình duyệt. Ảnh chưa được lưu vào Google Drive/Google Sheet và email chưa được gửi thật cho tới khi kết nối hệ thống Google ở bước triển khai cuối.</div>
+    <div class="confirmline"><label><input type="checkbox" id="confirm"><span>Tôi xác nhận thông tin hành chính, sản phẩm, số lượng, các size cần đăng ký và số tiền chuyển khoản là chính xác.</span></label></div>
+    <div class="warning"><strong>Lưu ý:</strong> size blouse không đăng ký trên form và sẽ được thử trực tiếp.</div>
     <div class="actions"><button class="secondary" onclick="back2()">← Quay lại QR</button><button class="primary" onclick="finish()">Hoàn tất kiểm tra</button></div>
   </section>
 
@@ -198,9 +142,9 @@
     <div class="success">
       <div class="check">✓</div>
       <h2>Đã tổng hợp thông tin đăng ký</h2>
-      <div class="sub">Dưới đây là nội dung xác nhận dự kiến gửi đến email sinh viên khi hệ thống Google được kết nối.</div>
+      <div class="sub">Dưới đây là nội dung xác nhận đăng ký.</div>
       <div class="emailmock">
-        <div class="mini">NỘI DUNG EMAIL XÁC NHẬN DỰ KIẾN</div>
+        <div class="mini">NỘI DUNG EMAIL XÁC NHẬN</div>
         <h3 style="margin:6px 0 12px">Xác nhận đăng ký trang phục & vật phẩm sinh viên</h3>
         <div id="emailBody"></div>
       </div>
