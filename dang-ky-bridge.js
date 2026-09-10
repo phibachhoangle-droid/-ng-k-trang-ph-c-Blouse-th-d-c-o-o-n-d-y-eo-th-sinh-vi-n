@@ -5,6 +5,8 @@ function submitViaIframe(payload){
     const requestId='REQ-'+Date.now()+'-'+Math.random().toString(36).slice(2,10);
     payload.requestId=requestId;
     const frameName='registrationBridge_'+requestId.replace(/[^A-Za-z0-9_]/g,'');
+    const callbackName='__regStatus_'+requestId.replace(/[^A-Za-z0-9_]/g,'');
+
     const iframe=document.createElement('iframe');
     iframe.name=frameName;
     iframe.style.display='none';
@@ -25,27 +27,70 @@ function submitViaIframe(payload){
     document.body.appendChild(form);
 
     let finished=false;
+    let pollTimer=null;
+    let timeoutTimer=null;
+    const scripts=[];
+
     const cleanup=()=>{
       if(finished)return;
       finished=true;
       window.removeEventListener('message',onMessage);
-      clearTimeout(timer);
+      if(pollTimer)clearTimeout(pollTimer);
+      if(timeoutTimer)clearTimeout(timeoutTimer);
+      try{delete window[callbackName]}catch(_){window[callbackName]=undefined}
+      scripts.forEach(s=>{try{s.remove()}catch(_){}});
       setTimeout(()=>{try{form.remove();iframe.remove()}catch(_){}},100);
     };
+
+    const finishFromData=(data)=>{
+      if(!data||data.requestId!==requestId)return false;
+      if(data.status==='done'&&data.ok){cleanup();resolve(data);return true}
+      if(data.status==='error'||data.ok===false&&data.error){cleanup();reject(new Error(data.error||'Không thể lưu đăng ký'));return true}
+      return false;
+    };
+
     const onMessage=(event)=>{
       const data=event.data;
-      if(!data||data.type!==REGISTRATION_MESSAGE_TYPE||data.requestId!==requestId)return;
-      cleanup();
-      if(data.ok)resolve(data);else reject(new Error(data.error||'Không thể lưu đăng ký'));
+      if(!data||data.type!==REGISTRATION_MESSAGE_TYPE)return;
+      finishFromData(data);
     };
     window.addEventListener('message',onMessage);
-    const timer=setTimeout(()=>{
+
+    window[callbackName]=(data)=>{
+      if(finished)return;
+      if(!finishFromData(data)) schedulePoll(1200);
+    };
+
+    const pollStatus=()=>{
+      if(finished)return;
+      const script=document.createElement('script');
+      scripts.push(script);
+      script.async=true;
+      script.src=BACKEND_URL+'?action=status&requestId='+encodeURIComponent(requestId)+'&callback='+encodeURIComponent(callbackName)+'&_='+Date.now();
+      script.onerror=()=>{if(!finished)schedulePoll(1800)};
+      script.onload=()=>{setTimeout(()=>{try{script.remove()}catch(_){}},50)};
+      document.head.appendChild(script);
+    };
+
+    function schedulePoll(delay){
+      if(finished)return;
+      if(pollTimer)clearTimeout(pollTimer);
+      pollTimer=setTimeout(pollStatus,delay);
+    }
+
+    timeoutTimer=setTimeout(()=>{
       if(finished)return;
       cleanup();
-      reject(new Error('Hệ thống chưa phản hồi sau 60 giây. Vui lòng kiểm tra Google Sheet/Email trước khi gửi lại để tránh trùng đăng ký.'));
-    },60000);
+      reject(new Error('Hệ thống chưa xác nhận kết quả sau 120 giây. Vui lòng kiểm tra Google Sheet/Email trước khi gửi lại để tránh trùng đăng ký.'));
+    },120000);
 
-    try{form.submit()}catch(err){cleanup();reject(err)}
+    try{
+      form.submit();
+      schedulePoll(1000);
+    }catch(err){
+      cleanup();
+      reject(err);
+    }
   });
 }
 
