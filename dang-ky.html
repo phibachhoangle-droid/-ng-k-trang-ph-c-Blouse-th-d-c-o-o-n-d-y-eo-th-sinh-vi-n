@@ -38,7 +38,7 @@
       <div><label>Ngành / nhóm học *</label><select id="major"><option value="">— Chọn ngành / nhóm —</option><option>Điều dưỡng</option><option>GMHS</option><option>Răng Hàm Mặt</option><option>YTCC</option><option>Dược</option><option>PHCN</option><option>Hình ảnh y học</option><option>Y khoa</option><option>Xét nghiệm Y học</option></select></div>
       <div>
         <label>Lớp *</label>
-        <select id="className">
+        <select id="className" onchange="handleClassChange()">
           <option value="">— Chọn lớp —</option>
           <option>ĐH ĐD 14A</option><option>ĐH ĐD 14B</option><option>ĐH ĐD 14C</option><option>ĐH ĐD 14D</option><option>ĐH ĐD 14E</option>
           <option>ĐH KT XNYH 14A</option><option>ĐH KT XNYH 14B</option>
@@ -52,7 +52,7 @@
         <div id="classQrNote" class="qr-class-note hidden"></div>
       </div>
       <div><label>Số điện thoại *</label><input id="phone" inputmode="tel" autocomplete="tel" placeholder="09xxxxxxxx"></div>
-      <div id="otherClassWrap" class="full other-class hidden"><label>Tên lớp khác *</label><input id="otherClass" placeholder="Nhập đầy đủ tên lớp của bạn"></div>
+      <div id="otherClassWrap" class="full other-class" style="display:none"><label>Tên lớp khác *</label><input id="otherClass" placeholder="Nhập đầy đủ tên lớp của bạn"></div>
       <div class="full"><label>Email *</label><input id="email" type="email" autocomplete="email" placeholder="tenban@gmail.com"></div>
     </div>
     <div class="privacy">Lớp được chọn từ danh sách chính thức. Nếu không thuộc các lớp trên, chọn <strong>KHÁC</strong> và nhập tên lớp đầy đủ.</div>
@@ -88,6 +88,6 @@
 
   <div class="footer-note">Đăng ký đồng phục & vật dụng sinh viên</div>
 </div>
-<script src="dang-ky-3-ngay.js"></script>
+<script src="dang-ky.js?v=20260910-2301"></script>
 </body>
 </html>
