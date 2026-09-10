@@ -182,3 +182,38 @@ async function submitRegistration(){
     btn.textContent='Gửi đăng ký & minh chứng';
   }
 }
+
+// Quy tắc mũ: Nữ thuộc Điều dưỡng / GMHS / Răng Hàm Mặt dùng mũ 3 lá.
+const HAT_THREE_LEAF_MAJORS=['Điều dưỡng','GMHS','Răng Hàm Mặt'];
+hatType=function(){
+  const major=clean($('major').value);
+  const gender=clean($('gender').value);
+  return HAT_THREE_LEAF_MAJORS.includes(major)&&gender==='Nữ'?'Mũ 3 lá (Nữ)':'';
+};
+updateHatNote=function(){
+  const noteText=hatType()?`🎓 Ghi chú mũ: ${hatType()}`:'';
+  let setNote=$('hatSetNote');
+  if(!setNote){
+    const panel=$('blouseSetPanel');
+    const target=panel&&panel.querySelector('.hint');
+    if(target){
+      setNote=document.createElement('div');
+      setNote.id='hatSetNote';
+      setNote.className='hint';
+      setNote.style.marginTop='6px';
+      setNote.style.fontWeight='800';
+      target.insertAdjacentElement('afterend',setNote);
+    }
+  }
+  if(setNote)setNote.textContent=noteText;
+  const separateNote=$('hatNote');
+  if(separateNote)separateNote.textContent=noteText;
+};
+
+document.addEventListener('DOMContentLoaded',()=>{
+  updateHatNote();
+  ['major','gender'].forEach(id=>{
+    const el=$(id);
+    if(el)el.addEventListener('change',()=>{updateHatNote();compute()});
+  });
+});
