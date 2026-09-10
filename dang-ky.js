@@ -1,4 +1,4 @@
-const BACKEND_URL='';
+const BACKEND_URL='https://script.google.com/macros/s/AKfycbzhIug86TY6BpNpBpG1oTF8LgfsbUJNeLl41p6CGiw86q7d3_IAX0jfib74emQZOUhO/exec';
 
 const OFFICIAL_CLASSES=['ĐH ĐD 14A','ĐH ĐD 14B','ĐH ĐD 14C','ĐH ĐD 14D','ĐH ĐD 14E','ĐH KT XNYH 14A','ĐH KT XNYH 14B','ĐH KT HAYH 13A','ĐH KT HAYH 13B','ĐH KT PHCN 13A','ĐH KT PHCN 13B','ĐH Dược học 14A','ĐH Dược học 14B','ĐH YK 12A','ĐH YK 12B','ĐH YK 12C','ĐH YK 12D','ĐH YTCC 10'];
 const PRICE={blouseSet:375000,blouseShirt:280000,blousePants:120000,blouseHat:25000,sport:170000,union:75000,bag:180000,lanyard:22000};
