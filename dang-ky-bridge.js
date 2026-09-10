@@ -123,6 +123,7 @@ function renderFinalConfirmation(payload,data){
   done.innerHTML=`
     <div class="success" style="max-width:780px;margin:0 auto">
       <div class="check">✓</div>
+      <div style="font-size:12px;font-weight:950;letter-spacing:.08em;color:#0f766e;margin-bottom:8px">BƯỚC 5 — XÁC NHẬN ĐĂNG KÝ</div>
       <h2 style="margin-bottom:6px">Cảm ơn bạn đã đăng ký!</h2>
       <div class="sub" style="margin-bottom:18px">Hệ thống đã ghi nhận đăng ký và ảnh minh chứng chuyển khoản của bạn.</div>
 
@@ -210,7 +211,42 @@ updateHatNote=function(){
   if(separateNote)separateNote.textContent=noteText;
 };
 
+function ensureFiveStepUI(){
+  const steps=document.querySelector('.steps');
+  if(steps){
+    steps.style.gridTemplateColumns='repeat(5,1fr)';
+    if(!$('s5')){
+      const s5=document.createElement('div');
+      s5.className='step';
+      s5.id='s5';
+      s5.textContent='5. Xác nhận';
+      steps.appendChild(s5);
+    }
+  }
+  const topSub=document.querySelector('.top .sub');
+  if(topSub)topSub.textContent='Khai thông tin → chọn sản phẩm & size → thanh toán QR → gửi minh chứng → xác nhận đăng ký';
+}
+
+const baseSetStep=setStep;
+setStep=function(n){
+  ensureFiveStepUI();
+  ['step1','step2','step3','step4','done'].forEach(id=>{const el=$(id);if(el)el.classList.add('hidden')});
+  if(n===1)$('step1').classList.remove('hidden');
+  if(n===2)$('step2').classList.remove('hidden');
+  if(n===3)$('step3').classList.remove('hidden');
+  if(n===4)$('step4').classList.remove('hidden');
+  if(n===5)$('done').classList.remove('hidden');
+  ['s1','s2','s3','s4','s5'].forEach((id,i)=>{
+    const el=$(id);if(!el)return;
+    el.classList.remove('active','done');
+    if(i+1===n)el.classList.add('active');
+    if(i+1<n)el.classList.add('done');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
 document.addEventListener('DOMContentLoaded',()=>{
+  ensureFiveStepUI();
   updateHatNote();
   ['major','gender'].forEach(id=>{
     const el=$(id);
