@@ -1,206 +1,35 @@
-const PRODUCTS={
- blouse:{qty:'q_blouse',name:'Blouse (áo + quần + mũ)',price:375000,size:'sz_blouse',type:'type_blouse'},
- union:{qty:'q_union',name:'Áo Đoàn',price:75000,size:'sz_union'},
- sport:{qty:'q_sport',name:'Đồ thể dục',price:170000,size:'sz_sport'},
- bag:{qty:'q_bag',name:'Balo trường',price:180000},
- lanyard:{qty:'q_lanyard',name:'Dây đeo thẻ có logo trường',price:22000}
-};
+const BACKEND_URL='';
 
-const OFFICIAL_CLASSES=[
- 'ĐH ĐD 14A','ĐH ĐD 14B','ĐH ĐD 14C','ĐH ĐD 14D','ĐH ĐD 14E',
- 'ĐH KT XNYH 14A','ĐH KT XNYH 14B',
- 'ĐH KT HAYH 13A','ĐH KT HAYH 13B',
- 'ĐH KT PHCN 13A','ĐH KT PHCN 13B',
- 'ĐH Dược học 14A','ĐH Dược học 14B',
- 'ĐH YK 12A','ĐH YK 12B','ĐH YK 12C','ĐH YK 12D',
- 'ĐH YTCC 10'
-];
+const OFFICIAL_CLASSES=['ĐH ĐD 14A','ĐH ĐD 14B','ĐH ĐD 14C','ĐH ĐD 14D','ĐH ĐD 14E','ĐH KT XNYH 14A','ĐH KT XNYH 14B','ĐH KT HAYH 13A','ĐH KT HAYH 13B','ĐH KT PHCN 13A','ĐH KT PHCN 13B','ĐH Dược học 14A','ĐH Dược học 14B','ĐH YK 12A','ĐH YK 12B','ĐH YK 12C','ĐH YK 12D','ĐH YTCC 10'];
+const PRICE={blouseSet:375000,blouseShirt:280000,blousePants:120000,blouseHat:25000,sport:170000,union:75000,bag:180000,lanyard:22000};
+let state={total:0,lines:[],qrClass:'',transferContent:''};
+const $=id=>document.getElementById(id);const clean=s=>(s||'').trim();const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
 
-let state={total:0,lines:[],qrClass:''};
-const $=id=>document.getElementById(id);
-const clean=s=>(s||'').trim();
-const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
+function setStep(n){['step1','step2','step3','step4','done'].forEach(id=>$(id).classList.add('hidden'));if(n===1)$('step1').classList.remove('hidden');if(n===2)$('step2').classList.remove('hidden');if(n===3)$('step3').classList.remove('hidden');if(n===4)$('step4').classList.remove('hidden');if(n===5)$('done').classList.remove('hidden');['s1','s2','s3','s4'].forEach((id,i)=>{const el=$(id);el.classList.remove('active','done');if(i+1===n)el.classList.add('active');if(i+1<n||n===5)el.classList.add('done')});window.scrollTo({top:0,behavior:'smooth'})}
+function normalizeText(s){return clean(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/Đ/g,'D').replace(/đ/g,'d').replace(/\s+/g,' ').toUpperCase()}
+function getClassName(){const selected=clean($('className').value);return selected==='KHÁC'?clean($('otherClass').value):selected}
+function handleClassChange(){const isOther=$('className').value==='KHÁC';$('otherClassWrap').style.display=isOther?'block':'none';if(!isOther)$('otherClass').value='';if(isOther)setTimeout(()=>$('otherClass').focus(),30)}
+function initClassSelection(){handleClassChange();const params=new URLSearchParams(window.location.search);const requested=clean(params.get('class'));if(!requested)return;const match=OFFICIAL_CLASSES.find(x=>normalizeText(x)===normalizeText(requested));if(!match)return;$('className').value=match;$('className').disabled=true;state.qrClass=match;$('classQrNote').textContent='✓ Lớp đã được xác định tự động từ QR: '+match;$('classQrNote').classList.remove('hidden')}
 
-function setStep(n){
- ['step1','step2','step3','done'].forEach(id=>$(id).classList.add('hidden'));
- if(n===1)$('step1').classList.remove('hidden');
- if(n===2)$('step2').classList.remove('hidden');
- if(n===3)$('step3').classList.remove('hidden');
- if(n===4)$('done').classList.remove('hidden');
- ['s1','s2','s3'].forEach((id,i)=>{
-   const el=$(id);
-   el.classList.remove('active','done');
-   if(i+1===n)el.classList.add('active');
-   if(i+1<n||n===4)el.classList.add('done');
- });
- window.scrollTo({top:0,behavior:'smooth'});
-}
+function validatePerson(){const required=[['name','Họ và tên'],['studentId','Mã sinh viên'],['cccd','Số CCCD'],['gender','Giới tính'],['height','Chiều cao'],['weight','Cân nặng'],['major','Ngành / nhóm học'],['phone','Số điện thoại'],['email','Email']];for(const [id,label] of required){if(!clean($(id).value)){alert('Vui lòng nhập/chọn '+label+'.');$(id).focus();return false}}if(!clean($('className').value)){alert('Vui lòng chọn Lớp.');$('className').focus();return false}if($('className').value==='KHÁC'&&!clean($('otherClass').value)){alert('Vui lòng nhập tên lớp của bạn.');$('otherClass').focus();return false}if(!/^\d{12}$/.test(clean($('cccd').value))){alert('Số CCCD phải gồm đúng 12 chữ số.');$('cccd').focus();return false}const h=Number($('height').value),w=Number($('weight').value);if(!Number.isFinite(h)||h<120||h>220){alert('Vui lòng kiểm tra lại chiều cao (cm).');$('height').focus();return false}if(!Number.isFinite(w)||w<25||w>200){alert('Vui lòng kiểm tra lại cân nặng (kg).');$('weight').focus();return false}const phone=clean($('phone').value).replace(/\s/g,'');if(!/^0?\d{9,10}$/.test(phone)){alert('Vui lòng kiểm tra lại số điện thoại.');$('phone').focus();return false}const email=clean($('email').value);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Email chưa đúng định dạng.');$('email').focus();return false}return true}
 
-function normalizeText(s){
- return clean(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/Đ/g,'D').replace(/đ/g,'d').replace(/\s+/g,' ').toUpperCase();
-}
+function blouseMode(){return document.querySelector('input[name="blouseMode"]:checked')?.value||'none'}
+function handleBlouseMode(){const mode=blouseMode();$('blouseSetPanel').style.display=mode==='set'?'block':'none';$('blouseSeparatePanel').style.display=mode==='separate'?'block':'none';if(mode!=='set'){$('q_blouse_set').value='0';$('sz_blouse_set').value=''}if(mode!=='separate'){$('q_blouse_shirt').value='0';$('sz_blouse_shirt').value='';$('q_blouse_pants').value='0';$('sz_blouse_pants').value='';$('q_blouse_hat').value='0'}updateHatNote();compute()}
+function getSportSize(){return document.querySelector('input[name="sportSize"]:checked')?.value||''}
+function hatType(){if(clean($('major').value)!=='Điều dưỡng')return '';const gender=clean($('gender').value);if(gender==='Nam')return 'Mũ Nam';if(gender==='Nữ')return 'Mũ Nữ';return ''}
+function updateHatNote(){const note=$('hatNote');if(!note)return;if(clean($('major').value)==='Điều dưỡng'){const type=hatType();note.textContent=type?'Ngành Điều dưỡng: hệ thống sẽ ghi nhận loại mũ theo giới tính là '+type+'.':'Ngành Điều dưỡng: loại mũ sẽ được ghi nhận theo giới tính Nam/Nữ ở phần hành chính.'}else note.textContent='Mũ không có size.'}
+function addLine(name,qty,price,meta=''){qty=Number(qty||0);if(qty<=0)return;const subtotal=qty*price;state.total+=subtotal;state.lines.push({name,qty,price,subtotal,meta})}
+function compute(){state.total=0;state.lines=[];const mode=blouseMode();if(mode==='set')addLine('Bộ blouse (áo + quần + mũ)',+$('q_blouse_set').value,PRICE.blouseSet,clean($('sz_blouse_set').value)?'Size '+clean($('sz_blouse_set').value):'');else if(mode==='separate'){addLine('Áo blouse',+$('q_blouse_shirt').value,PRICE.blouseShirt,clean($('sz_blouse_shirt').value)?'Size '+clean($('sz_blouse_shirt').value):'');addLine('Quần blouse',+$('q_blouse_pants').value,PRICE.blousePants,clean($('sz_blouse_pants').value)?'Size '+clean($('sz_blouse_pants').value):'');addLine('Mũ blouse',+$('q_blouse_hat').value,PRICE.blouseHat,hatType())}addLine('Đồ thể dục',+$('q_sport').value,PRICE.sport,getSportSize()?'Size '+getSportSize():'');addLine('Áo Đoàn',+$('q_union').value,PRICE.union,clean($('sz_union').value)?'Size '+clean($('sz_union').value):'');addLine('Balo trường',+$('q_bag').value,PRICE.bag);addLine('Dây đeo thẻ có logo trường',+$('q_lanyard').value,PRICE.lanyard);$('liveTotal').textContent=money(state.total);$('liveNote').textContent=state.lines.length?state.lines.map(x=>x.qty+'× '+x.name).join(' • '):'Chưa chọn sản phẩm'}
+function validateProducts(){compute();if(state.total<=0){alert('Vui lòng đăng ký ít nhất một sản phẩm.');return false}const mode=blouseMode();if(mode==='set'&&+$('q_blouse_set').value<=0){alert('Bạn đã chọn Mua bộ blouse. Vui lòng chọn số lượng bộ.');$('q_blouse_set').focus();return false}if(mode==='set'&&!clean($('sz_blouse_set').value)){alert('Vui lòng chọn size bộ blouse sau khi đã thử trực tiếp.');$('sz_blouse_set').focus();return false}if(mode==='separate'){const shirt=+$('q_blouse_shirt').value,pants=+$('q_blouse_pants').value,hat=+$('q_blouse_hat').value;if(shirt+pants+hat<=0){alert('Bạn đã chọn Mua riêng blouse. Vui lòng chọn ít nhất một món.');return false}if(shirt>0&&!clean($('sz_blouse_shirt').value)){alert('Vui lòng chọn size áo blouse đã thử.');$('sz_blouse_shirt').focus();return false}if(pants>0&&!clean($('sz_blouse_pants').value)){alert('Vui lòng chọn size quần blouse đã thử.');$('sz_blouse_pants').focus();return false}}if(+$('q_sport').value>0&&!getSportSize()){alert('Vui lòng chọn size đồ thể dục.');return false}if(+$('q_union').value>0&&!clean($('sz_union').value)){alert('Vui lòng chọn size áo Đoàn sau khi đã thử trực tiếp.');$('sz_union').focus();return false}return true}
 
-function getClassName(){
- const selected=clean($('className').value);
- return selected==='KHÁC'?clean($('otherClass').value):selected;
-}
+function transferText(){return clean($('name').value).replace(/\s+/g,' ')+' - '+clean($('studentId').value)}
+function renderReview(){compute();const person=[['Họ tên',clean($('name').value)],['MSSV',clean($('studentId').value)],['Giới tính',clean($('gender').value)],['Chiều cao',clean($('height').value)+' cm'],['Cân nặng',clean($('weight').value)+' kg'],['Ngành / nhóm',clean($('major').value)],['Lớp',getClassName()],['SĐT',clean($('phone').value)],['Email',clean($('email').value)]];const p='<div class="review"><div class="mini" style="font-weight:900;margin-bottom:4px">THÔNG TIN SINH VIÊN</div>'+person.map(x=>`<div class="line"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')+'</div>';const items='<div class="review" style="margin-top:12px"><div class="mini" style="font-weight:900;margin-bottom:4px">SẢN PHẨM ĐĂNG KÝ</div>'+state.lines.map(x=>`<div class="line"><span><strong>${x.name}</strong><br><span class="mini">${x.qty} × ${money(x.price)}${x.meta?' • '+x.meta:''}</span></span><strong>${money(x.subtotal)}</strong></div>`).join('')+'</div>';$('review').innerHTML=p+items;$('finalTotal').textContent=money(state.total);$('bankAmount').textContent=money(state.total);state.transferContent=transferText();$('transferContent').textContent=state.transferContent;$('qr').src='https://img.vietqr.io/image/TPB-10001778727-compact2.png?amount='+encodeURIComponent(state.total)+'&addInfo='+encodeURIComponent(state.transferContent)+'&accountName='+encodeURIComponent('HOANG LE PHI BACH')}
+function copyTransfer(btn){navigator.clipboard.writeText(state.transferContent||transferText()).then(()=>{const old=btn.textContent;btn.textContent='Đã copy';setTimeout(()=>btn.textContent=old,1200)})}
+function go2(){if(validatePerson()){updateHatNote();setStep(2)}}function back1(){setStep(1)}function go3(){if(!validateProducts())return;renderReview();setStep(3)}function back2(){setStep(2)}function go4(){setStep(4)}function back3(){setStep(3)}
 
-function handleClassChange(){
- const select=$('className');
- const wrap=$('otherClassWrap');
- const input=$('otherClass');
- if(!select||!wrap||!input)return;
- const isOther=select.value==='KHÁC';
- wrap.classList.toggle('hidden',!isOther);
- wrap.style.display=isOther?'block':'none';
- if(!isOther)input.value='';
- if(isOther)setTimeout(()=>input.focus(),50);
-}
+function previewFile(){const f=$('proof').files[0],img=$('preview');if(!f){img.style.display='none';img.removeAttribute('src');return}if(!f.type.startsWith('image/')){alert('Vui lòng chọn file hình ảnh.');$('proof').value='';return}if(f.size>5*1024*1024){alert('Ảnh minh chứng tối đa 5 MB.');$('proof').value='';return}img.src=URL.createObjectURL(f);img.style.display='inline-block'}
+function fileToBase64(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=reject;reader.readAsDataURL(file)})}
+function payloadBase(){return{name:clean($('name').value),studentId:clean($('studentId').value),cccd:clean($('cccd').value),gender:clean($('gender').value),height:Number($('height').value),weight:Number($('weight').value),majorName:clean($('major').value),className:getClassName(),classWasOther:$('className').value==='KHÁC',phone:clean($('phone').value),email:clean($('email').value),sourceQr:state.qrClass||'',blouseMode:blouseMode(),qBlouseSet:+$('q_blouse_set').value,blouseSetSize:clean($('sz_blouse_set').value),qBlouseShirt:+$('q_blouse_shirt').value,blouseShirtSize:clean($('sz_blouse_shirt').value),qBlousePants:+$('q_blouse_pants').value,blousePantsSize:clean($('sz_blouse_pants').value),qBlouseHat:+$('q_blouse_hat').value,hatType:hatType(),qSport:+$('q_sport').value,sportSize:getSportSize(),qUnion:+$('q_union').value,unionSize:clean($('sz_union').value),qBag:+$('q_bag').value,qLanyard:+$('q_lanyard').value,total:state.total,transferContent:state.transferContent||transferText()}}
+async function submitRegistration(){if(!$('confirm').checked){alert('Vui lòng tích xác nhận trước khi gửi.');return}const file=$('proof').files[0];if(!file){alert('Vui lòng tải ảnh chụp màn hình chuyển khoản thành công.');return}if(file.size>5*1024*1024){alert('Ảnh minh chứng tối đa 5 MB.');return}if(!BACKEND_URL){alert('Form đã hoàn thiện phần giao diện, QR và minh chứng nhưng chưa được nối với Google Apps Script Web App. Cần dán URL /exec vào BACKEND_URL để lưu Google Sheet và gửi email thật.');return}const btn=$('submitBtn');btn.disabled=true;btn.textContent='Đang gửi...';try{const payload=payloadBase();payload.proofBase64=await fileToBase64(file);payload.proofMime=file.type||'image/jpeg';payload.proofName=file.name||'minh-chung.jpg';const res=await fetch(BACKEND_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});const data=await res.json();if(!data.ok)throw new Error(data.error||'Không thể lưu đăng ký');const mailText=data.emailSent?`Email xác nhận đã được gửi đến <strong>${payload.email}</strong>.`:`Đăng ký đã lưu thành công nhưng email xác nhận chưa gửi được; ban tổ chức sẽ kiểm tra lại.`;$('doneText').innerHTML=`Đăng ký của <strong>${payload.name}</strong> — lớp <strong>${payload.className}</strong> đã được ghi nhận.<br>Tổng thanh toán: <strong>${money(data.total||state.total)}</strong>.<br>${mailText}`;setStep(5)}catch(err){alert('Không thể gửi đăng ký: '+(err&&err.message?err.message:err))}finally{btn.disabled=false;btn.textContent='Gửi đăng ký & minh chứng'}}
 
-function initClassSelection(){
- const select=$('className');
- select.addEventListener('change',handleClassChange);
- handleClassChange();
- const params=new URLSearchParams(window.location.search);
- const requested=clean(params.get('class'));
- if(!requested)return;
- const match=OFFICIAL_CLASSES.find(x=>normalizeText(x)===normalizeText(requested));
- if(!match)return;
- select.value=match;
- select.disabled=true;
- state.qrClass=match;
- const note=$('classQrNote');
- note.textContent='✓ Lớp đã được xác định tự động từ QR: '+match;
- note.classList.remove('hidden');
- handleClassChange();
-}
-
-function validatePerson(){
- const required=[['name','Họ và tên'],['studentId','Mã sinh viên'],['cccd','Số CCCD'],['major','Ngành / nhóm học'],['phone','Số điện thoại'],['email','Email']];
- for(const [id,label] of required){
-   if(!clean($(id).value)){
-     alert('Vui lòng nhập/chọn '+label+'.');
-     $(id).focus();
-     return false;
-   }
- }
- if(!clean($('className').value)){
-   alert('Vui lòng chọn Lớp.');
-   $('className').focus();
-   return false;
- }
- if($('className').value==='KHÁC'&&!clean($('otherClass').value)){
-   alert('Vui lòng nhập tên lớp của bạn.');
-   $('otherClass').focus();
-   return false;
- }
- if(!/^\d{12}$/.test(clean($('cccd').value))){
-   alert('Số CCCD phải gồm đúng 12 chữ số.');
-   $('cccd').focus();
-   return false;
- }
- const phone=clean($('phone').value).replace(/\s/g,'');
- if(!/^0?\d{9,10}$/.test(phone)){
-   alert('Vui lòng kiểm tra lại số điện thoại.');
-   $('phone').focus();
-   return false;
- }
- const email=clean($('email').value);
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-   alert('Email chưa đúng định dạng.');
-   $('email').focus();
-   return false;
- }
- return true;
-}
-
-function updateControlState(){
- const b=+$('q_blouse').value>0;
- $('type_blouse').disabled=!b;
- $('sz_blouse').disabled=!b;
- const u=+$('q_union').value>0;
- $('sz_union').disabled=!u;
- const s=+$('q_sport').value>0;
- $('sz_sport').disabled=!s;
-}
-
-function compute(){
- state.total=0;
- state.lines=[];
- Object.values(PRODUCTS).forEach(p=>{
-   const q=+$(p.qty).value;
-   if(q>0){
-     let meta='';
-     if(p.type)meta+=$(p.type).value;
-     if(p.size)meta+=(meta?' • ':'')+'Size '+$(p.size).value;
-     const subtotal=q*p.price;
-     state.total+=subtotal;
-     state.lines.push({name:p.name,qty:q,price:p.price,subtotal,meta});
-   }
- });
- $('liveTotal').textContent=money(state.total);
- $('liveNote').textContent=state.lines.length?state.lines.map(x=>x.qty+'× '+x.name).join(' • '):'Chưa chọn sản phẩm';
- updateControlState();
-}
-
-function validateProducts(){
- compute();
- if(state.total<=0){alert('Vui lòng đăng ký ít nhất một sản phẩm.');return false}
- if(+$('q_blouse').value>0&&!clean($('sz_blouse').value)){
-   alert('Vui lòng chọn size blouse sau khi đã thử trực tiếp.');
-   $('sz_blouse').focus();return false;
- }
- if(+$('q_union').value>0&&!clean($('sz_union').value)){
-   alert('Vui lòng chọn size áo Đoàn sau khi đã thử trực tiếp.');
-   $('sz_union').focus();return false;
- }
- if(+$('q_sport').value>0&&!clean($('sz_sport').value)){
-   alert('Vui lòng chọn size đồ thể dục.');
-   $('sz_sport').focus();return false;
- }
- return true;
-}
-
-function go2(){
- if(validatePerson())setStep(2);
-}
-function back1(){setStep(1)}
-function go3(){
- if(!validateProducts())return;
- renderReview();
- setStep(3);
-}
-function back2(){setStep(2)}
-
-function renderReview(){
- const person=[
-  ['Họ tên',clean($('name').value)],
-  ['MSSV',clean($('studentId').value)],
-  ['CCCD',clean($('cccd').value)],
-  ['Ngành / nhóm',clean($('major').value)],
-  ['Lớp',getClassName()],
-  ['SĐT',clean($('phone').value)],
-  ['Email',clean($('email').value)]
- ];
- const p='<div class="review"><div class="mini" style="font-weight:900;margin-bottom:4px">THÔNG TIN SINH VIÊN</div>'+person.map(x=>`<div class="line"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')+'</div>';
- const items='<div class="review" style="margin-top:12px"><div class="mini" style="font-weight:900;margin-bottom:4px">SẢN PHẨM ĐĂNG KÝ</div>'+state.lines.map(x=>`<div class="line"><span><strong>${x.name}</strong><br><span class="mini">${x.qty} × ${money(x.price)}${x.meta?' • '+x.meta:''}</span></span><strong>${money(x.subtotal)}</strong></div>`).join('')+'</div>';
- $('review').innerHTML=p+items;
- $('finalTotal').textContent=money(state.total);
-}
-
-function finish(){
- if(!$('confirm').checked){
-   alert('Vui lòng tích xác nhận trước khi hoàn tất.');
-   return;
- }
- $('doneText').innerHTML=`Đăng ký của <strong>${clean($('name').value)}</strong> — lớp <strong>${getClassName()}</strong> đã được tổng hợp.<br>Số tiền dự kiến nộp trực tiếp: <strong>${money(state.total)}</strong>.`;
- setStep(4);
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
- initClassSelection();
- document.querySelectorAll('.qty').forEach(el=>el.addEventListener('change',compute));
- ['type_blouse','sz_blouse','sz_union','sz_sport'].forEach(id=>$(id).addEventListener('change',compute));
- updateControlState();
- compute();
-});
+document.addEventListener('DOMContentLoaded',()=>{initClassSelection();document.querySelectorAll('.qty').forEach(el=>el.addEventListener('change',compute));['sz_blouse_set','sz_blouse_shirt','sz_blouse_pants','sz_union','gender','major'].forEach(id=>{const el=$(id);if(el)el.addEventListener('change',()=>{updateHatNote();compute()})});document.querySelectorAll('input[name="sportSize"]').forEach(el=>el.addEventListener('change',compute));handleBlouseMode();updateHatNote();compute()});
