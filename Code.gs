@@ -16,8 +16,32 @@ const MAJOR_CLASSES = {
   'Xét nghiệm Y học':['ĐH KT XNYH 14A','ĐH KT XNYH 14B']
 };
 
-function doGet(){return ContentService.createTextOutput(JSON.stringify({ok:true,service:'Trang phục sinh viên backend'})).setMimeType(ContentService.MimeType.JSON)}
-function doPost(e){try{const data=JSON.parse((e&&e.postData&&e.postData.contents)||'{}');return json_({ok:true,...saveRegistration_(data)})}catch(err){console.error(err);return json_({ok:false,error:String(err&&err.message||err)})}}
+function doGet(){
+  return ContentService.createTextOutput(JSON.stringify({ok:true,service:'Trang phục sinh viên backend'})).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e){
+  let requestId='';
+  try{
+    const raw=(e&&e.parameter&&e.parameter.payload)
+      ? e.parameter.payload
+      : ((e&&e.postData&&e.postData.contents)||'{}');
+    const data=JSON.parse(raw);
+    requestId=clean_(data.requestId);
+    const saved=saveRegistration_(data);
+    return htmlBridge_({type:'registration-result',requestId,ok:true,...saved});
+  }catch(err){
+    console.error(err);
+    return htmlBridge_({type:'registration-result',requestId,ok:false,error:String(err&&err.message||err)});
+  }
+}
+
+function htmlBridge_(obj){
+  const safe=JSON.stringify(obj).replace(/</g,'\\u003c');
+  return HtmlService
+    .createHtmlOutput('<!doctype html><html><head><meta charset="utf-8"></head><body><script>window.parent.postMessage('+safe+',"*");<\/script></body></html>')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
 
 function saveRegistration_(data){
   validatePerson_(data);
