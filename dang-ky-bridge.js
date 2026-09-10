@@ -49,6 +49,70 @@ function submitViaIframe(payload){
   });
 }
 
+function escapeHtml(value){
+  return String(value==null?'':value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+function renderFinalConfirmation(payload,data){
+  compute();
+  const finalTotal=Number(data&&data.total)||state.total;
+  const status='Chờ kiểm tra chuyển khoản';
+  const mailText=data&&data.emailSent
+    ? `Email xác nhận đã được gửi đến <strong>${escapeHtml(payload.email)}</strong>.`
+    : `Đăng ký đã được ghi nhận. Email xác nhận đang được hệ thống xử lý cho <strong>${escapeHtml(payload.email)}</strong>.`;
+
+  const itemRows=state.lines.map(item=>{
+    const meta=item.meta?`<div style="font-size:12px;color:#64748b;margin-top:3px">${escapeHtml(item.meta)}</div>`:'';
+    return `<div style="display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #e2e8f0;text-align:left">
+      <div><strong>${escapeHtml(item.name)}</strong>${meta}<div style="font-size:12px;color:#64748b;margin-top:3px">${item.qty} × ${money(item.price)}</div></div>
+      <strong style="white-space:nowrap">${money(item.subtotal)}</strong>
+    </div>`;
+  }).join('');
+
+  const done=$('done');
+  done.innerHTML=`
+    <div class="success" style="max-width:780px;margin:0 auto">
+      <div class="check">✓</div>
+      <h2 style="margin-bottom:6px">Cảm ơn bạn đã đăng ký!</h2>
+      <div class="sub" style="margin-bottom:18px">Hệ thống đã ghi nhận đăng ký và ảnh minh chứng chuyển khoản của bạn.</div>
+
+      <div style="text-align:left;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-top:14px">
+        <div style="font-size:12px;font-weight:900;color:#475569;margin-bottom:8px">THÔNG TIN ĐĂNG KÝ</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;line-height:1.55">
+          <div><span style="color:#64748b">Họ và tên:</span><br><strong>${escapeHtml(payload.name)}</strong></div>
+          <div><span style="color:#64748b">MSSV:</span><br><strong>${escapeHtml(payload.studentId)}</strong></div>
+          <div><span style="color:#64748b">Ngành / nhóm:</span><br><strong>${escapeHtml(payload.majorName)}</strong></div>
+          <div><span style="color:#64748b">Lớp:</span><br><strong>${escapeHtml(payload.className)}</strong></div>
+          <div><span style="color:#64748b">Giới tính:</span><br><strong>${escapeHtml(payload.gender)}</strong></div>
+          <div><span style="color:#64748b">Email:</span><br><strong>${escapeHtml(payload.email)}</strong></div>
+        </div>
+      </div>
+
+      <div style="text-align:left;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-top:12px">
+        <div style="font-size:12px;font-weight:900;color:#475569;margin-bottom:4px">CÁC HẠNG MỤC ĐÃ ĐĂNG KÝ</div>
+        ${itemRows}
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:14px">
+          <strong>TỔNG THANH TOÁN</strong>
+          <strong style="font-size:24px">${money(finalTotal)}</strong>
+        </div>
+      </div>
+
+      <div style="text-align:left;background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:14px 16px;margin-top:12px;line-height:1.6">
+        <div><span style="color:#475569">Nội dung chuyển khoản:</span> <strong>${escapeHtml(payload.transferContent)}</strong></div>
+        <div><span style="color:#475569">Trạng thái:</span> <strong>${status}</strong></div>
+        <div style="margin-top:6px">${mailText}</div>
+      </div>
+
+      <div style="margin-top:18px;font-size:17px;font-weight:900">Cảm ơn bạn đã đăng ký. Vui lòng giữ lại email xác nhận để đối chiếu khi cần.</div>
+      <div class="actions" style="justify-content:center;margin-top:18px"><button class="secondary" onclick="location.reload()">Tạo đăng ký mới</button></div>
+    </div>`;
+}
+
 async function submitRegistration(){
   if(!$('confirm').checked){alert('Vui lòng tích xác nhận trước khi gửi.');return}
   const file=$('proof').files[0];
@@ -64,8 +128,7 @@ async function submitRegistration(){
     payload.proofMime=file.type||'image/jpeg';
     payload.proofName=file.name||'minh-chung.jpg';
     const data=await submitViaIframe(payload);
-    const mailText=data.emailSent?`Email xác nhận đã được gửi đến <strong>${payload.email}</strong>.`:`Đăng ký đã lưu thành công nhưng email xác nhận chưa gửi được; ban tổ chức sẽ kiểm tra lại.`;
-    $('doneText').innerHTML=`Đăng ký của <strong>${payload.name}</strong> — lớp <strong>${payload.className}</strong> đã được ghi nhận.<br>Tổng thanh toán: <strong>${money(data.total||state.total)}</strong>.<br>${mailText}`;
+    renderFinalConfirmation(payload,data);
     setStep(5);
   }catch(err){
     alert('Không thể gửi đăng ký: '+(err&&err.message?err.message:err));
