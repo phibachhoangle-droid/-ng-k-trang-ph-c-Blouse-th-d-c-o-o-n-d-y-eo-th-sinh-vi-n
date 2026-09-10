@@ -16,7 +16,7 @@ const OFFICIAL_CLASSES=[
  'ĐH YTCC 10'
 ];
 
-let state={total:0,lines:[],visit:null,qrClass:''};
+let state={total:0,lines:[],qrClass:''};
 const $=id=>document.getElementById(id);
 const clean=s=>(s||'').trim();
 const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
@@ -61,13 +61,6 @@ function initClassSelection(){
  handleClassChange();
 }
 
-function selectedDay(){
- const x=document.querySelector('input[name="visitDay"]:checked');
- if(!x)return null;
- const [date,time,groups]=x.value.split('|');
- return {date,time,groups};
-}
-
 function validatePerson(){
  const required=[['name','Họ và tên'],['studentId','Mã sinh viên'],['cccd','Số CCCD'],['major','Ngành / nhóm học'],['phone','Số điện thoại'],['email','Email']];
  for(const [id,label] of required){if(!clean($(id).value)){alert('Vui lòng nhập/chọn '+label+'.');$(id).focus();return false}}
@@ -78,8 +71,6 @@ function validatePerson(){
  if(!/^0?\d{9,10}$/.test(phone)){alert('Vui lòng kiểm tra lại số điện thoại.');$('phone').focus();return false}
  const email=clean($('email').value);
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Email chưa đúng định dạng.');$('email').focus();return false}
- state.visit=selectedDay();
- if(!state.visit){alert('Vui lòng chọn ngày dự kiến đến đăng ký / thử đồ.');return false}
  return true;
 }
 
@@ -122,21 +113,18 @@ function go3(){if(!validateProducts())return;renderReview();setStep(3)}
 function back2(){setStep(2)}
 
 function renderReview(){
- state.visit=selectedDay();
  const person=[
   ['Họ tên',clean($('name').value)],['MSSV',clean($('studentId').value)],['CCCD',clean($('cccd').value)],['Ngành / nhóm',clean($('major').value)],['Lớp',getClassName()],['SĐT',clean($('phone').value)],['Email',clean($('email').value)]
  ];
- const date=`<div class="review-date"><strong>Ngày dự kiến đến:</strong> ${state.visit.date} • ${state.visit.time}<br><span class="mini">Nhóm ưu tiên theo thông báo: ${state.visit.groups}. Sinh viên vẫn có thể đến bất kỳ thời gian nào trong 3 ngày.</span></div>`;
  const p='<div class="review"><div class="mini" style="font-weight:900;margin-bottom:4px">THÔNG TIN SINH VIÊN</div>'+person.map(x=>`<div class="line"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')+'</div>';
  const items='<div class="review" style="margin-top:12px"><div class="mini" style="font-weight:900;margin-bottom:4px">SẢN PHẨM ĐĂNG KÝ</div>'+state.lines.map(x=>`<div class="line"><span><strong>${x.name}</strong><br><span class="mini">${x.qty} × ${money(x.price)}${x.meta?' • '+x.meta:''}</span></span><strong>${money(x.subtotal)}</strong></div>`).join('')+'</div>';
- $('review').innerHTML=date+p+items;
+ $('review').innerHTML=p+items;
  $('finalTotal').textContent=money(state.total);
 }
 
 function finish(){
  if(!$('confirm').checked){alert('Vui lòng tích xác nhận trước khi hoàn tất.');return}
- const day=state.visit||selectedDay();
- $('doneText').innerHTML=`Đăng ký của <strong>${clean($('name').value)}</strong> — lớp <strong>${getClassName()}</strong> đã được tổng hợp.<br>Dự kiến đến: <strong>${day.date} • ${day.time}</strong>.<br>Số tiền dự kiến nộp trực tiếp: <strong>${money(state.total)}</strong>.`;
+ $('doneText').innerHTML=`Đăng ký của <strong>${clean($('name').value)}</strong> — lớp <strong>${getClassName()}</strong> đã được tổng hợp.<br>Số tiền dự kiến nộp trực tiếp: <strong>${money(state.total)}</strong>.`;
  setStep(4);
 }
 
