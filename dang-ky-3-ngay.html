@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng ký đồng phục & vật dụng sinh viên — 11–13/09</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.schedule-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 4px}.day-card{position:relative;border:2px solid var(--line);border-radius:16px;padding:15px;background:#fff;cursor:pointer}.day-card input{position:absolute;opacity:0;pointer-events:none}.day-card:has(input:checked){border-color:var(--p2);background:#f0fdfa;box-shadow:0 0 0 3px #99f6e433}.day-title{font-weight:950;font-size:16px}.day-time{font-weight:900;color:var(--p);margin:5px 0}.day-groups{font-size:12px;line-height:1.5;color:var(--muted)}.onsite{margin:16px 0;padding:15px 16px;border-radius:15px;background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;font-weight:750;line-height:1.5}.place{margin:14px 0;padding:14px 16px;border-radius:14px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}.stock{display:inline-block;margin-top:7px;padding:5px 9px;border-radius:999px;background:#fff7ed;color:#c2410c;font-size:11px;font-weight:950}.review-date{padding:14px;border-radius:14px;background:#f0fdfa;border:1px solid #99f6e4;margin-bottom:12px}.pay-at-site{padding:16px;border-radius:16px;background:#fff7ed;border:1px solid #fed7aa;margin-top:14px}.pay-at-site .big{color:#c2410c}.choice-note{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.45}@media(max-width:820px){.schedule-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">SV</div>
+    <div>
+      <h1>Đăng ký đồng phục & vật dụng sinh viên</h1>
+      <div class="sub">Đợt đăng ký trực tiếp 3 ngày • 11–13/09/2026</div>
+    </div>
+  </div>
+
+  <div class="onsite">⚠️ <strong>Chỉ nộp tiền trực tiếp tại buổi đăng ký.</strong> Không chuyển khoản và không gửi tiền qua tin nhắn riêng để tránh giả mạo, lừa đảo.</div>
+  <div class="place">📍 <strong>Địa điểm:</strong> Tầng 7, Nhà B – Văn phòng Bộ môn GMHS, Cơ sở 1.</div>
+
+  <div class="steps">
+    <div class="step active" id="s1">1. Thông tin & ngày đến</div>
+    <div class="step" id="s2">2. Sản phẩm & size</div>
+    <div class="step" id="s3">3. Kiểm tra & xác nhận</div>
+  </div>
+
+  <section class="card" id="step1">
+    <h2 class="section-title">Bước 1 — Thông tin sinh viên</h2>
+    <div class="required-note">Các trường có dấu * là bắt buộc.</div>
+    <div class="grid">
+      <div><label>Họ và tên *</label><input id="name" autocomplete="name" placeholder="Nguyễn Văn A"></div>
+      <div><label>Mã sinh viên *</label><input id="studentId" placeholder="Nhập mã sinh viên"></div>
+      <div><label>Số căn cước công dân *</label><input id="cccd" inputmode="numeric" maxlength="12" placeholder="Nhập đủ 12 số CCCD"></div>
+      <div><label>Ngành / nhóm học *</label><select id="major"><option value="">— Chọn ngành / nhóm —</option><option>Điều dưỡng</option><option>GMHS</option><option>Răng Hàm Mặt</option><option>YTCC</option><option>Dược</option><option>PHCN</option><option>Hình ảnh y học</option><option>Y khoa</option><option>Xét nghiệm Y học</option></select></div>
+      <div><label>Lớp *</label><input id="className" placeholder="Nhập lớp hiện tại"></div>
+      <div><label>Số điện thoại *</label><input id="phone" inputmode="tel" autocomplete="tel" placeholder="09xxxxxxxx"></div>
+      <div class="full"><label>Email *</label><input id="email" type="email" autocomplete="email" placeholder="tenban@gmail.com"></div>
+    </div>
+
+    <h2 class="section-title products-title">Chọn ngày dự kiến đến đăng ký / thử đồ *</h2>
+    <div class="schedule-grid">
+      <label class="day-card"><input type="radio" name="visitDay" value="11/09/2026|14h–20h|Điều dưỡng – GMHS – Răng Hàm Mặt – YTCC"><div class="day-title">Thứ 6 • 11/09</div><div class="day-time">14h–20h</div><div class="day-groups">Ưu tiên: Điều dưỡng – GMHS – Răng Hàm Mặt – YTCC</div></label>
+      <label class="day-card"><input type="radio" name="visitDay" value="12/09/2026|8h–16h|Dược – PHCN – Hình ảnh y học"><div class="day-title">Thứ 7 • 12/09</div><div class="day-time">8h–16h</div><div class="day-groups">Ưu tiên: Dược – PHCN – Hình ảnh y học</div></label>
+      <label class="day-card"><input type="radio" name="visitDay" value="13/09/2026|8h–16h|Y khoa – Xét nghiệm Y học"><div class="day-title">Chủ nhật • 13/09</div><div class="day-time">8h–16h</div><div class="day-groups">Ưu tiên: Y khoa – Xét nghiệm Y học</div></label>
+    </div>
+    <div class="choice-note">Sinh viên các nhóm trên có thể đến <strong>bất kỳ thời gian nào trong cả 3 ngày</strong>. Việc chọn ngày ở đây chỉ để ban tổ chức dự kiến số lượng người đến từng ngày.</div>
+    <div class="actions"><button class="primary" onclick="go2()">Tiếp tục chọn sản phẩm →</button></div>
+  </section>
+
+  <section class="card hidden" id="step2">
+    <h2 class="section-title">Bước 2 — Chọn đồng phục & vật dụng</h2>
+
+    <div class="product"><div class="prow"><div class="pname"><strong>Blouse (áo + quần + mũ)</strong><div class="price">375.000đ / bộ</div><div class="info" style="margin-top:10px"><strong>Thử size trực tiếp.</strong> Sau khi mặc thử vừa, chọn đúng size đã thử để thống kê.</div></div><div><label>Số lượng</label><select id="q_blouse" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div><label>Loại</label><select id="type_blouse"><option>Nam</option><option>Nữ</option></select></div><div><label>Size đã thử</label><select id="sz_blouse"><option value="">— Chọn size —</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div></div></div>
+
+    <div class="product"><div class="prow"><div class="pname"><strong>Áo Đoàn</strong><div class="price">75.000đ / cái</div><div class="info" style="margin-top:10px"><strong>Thử size trực tiếp.</strong> Sau khi mặc thử vừa, chọn đúng size đã thử.</div></div><div><label>Số lượng</label><select id="q_union" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="grid-column:span 2"><label>Size đã thử</label><select id="sz_union"><option value="">— Chọn size —</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div></div></div>
+
+    <div class="product"><div class="prow"><div class="pname"><strong>Đồ thể dục</strong><div class="price">170.000đ / bộ</div><div class="hint">Chọn size theo bảng chiều cao – cân nặng.</div></div><div><label>Số lượng</label><select id="q_sport" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="grid-column:span 2"><label>Size</label><select id="sz_sport"><option value="">— Chọn size —</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div></div><details class="guide"><summary>Xem bảng size đồ thể dục</summary><div class="guidebox"><table><tr><th>Size</th><th>Chiều cao</th><th>Cân nặng</th></tr><tr><td>S</td><td>1m40–1m49</td><td>35–44kg</td></tr><tr><td>M</td><td>1m50–1m58</td><td>45–55kg</td></tr><tr><td>L</td><td>1m59–1m69</td><td>56–66kg</td></tr><tr><td>XL</td><td>1m70–1m80</td><td>67–77kg</td></tr><tr><td>XXL</td><td>1m81–1m90</td><td>78–95kg</td></tr></table></div></details></div>
+
+    <div class="product"><div class="prow"><div class="pname"><strong>Balo trường</strong><div class="price">180.000đ / cái</div><span class="stock">⚠ Chỉ có 250 cái toàn đợt</span><div class="hint">Số lượng thực tế được xác nhận theo tình trạng còn hàng tại thời điểm đăng ký trực tiếp.</div></div><div><label>Số lượng</label><select id="q_bag" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="grid-column:span 2"><label>Loại</label><input value="Balo trường" disabled></div></div></div>
+
+    <div class="product"><div class="prow"><div class="pname"><strong>Dây đeo thẻ có logo trường</strong><div class="price">22.000đ / cái</div></div><div><label>Số lượng</label><select id="q_lanyard" class="qty"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><div style="grid-column:span 2"><label>Loại</label><input value="Có logo trường" disabled></div></div></div>
+
+    <div class="totalbar"><div><div class="mini">TẠM TÍNH — NỘP TRỰC TIẾP</div><div class="num" id="liveTotal">0đ</div></div><div class="mini" id="liveNote">Chưa chọn sản phẩm</div></div>
+    <div class="actions"><button class="secondary" onclick="back1()">← Quay lại</button><button class="primary" onclick="go3()">Kiểm tra đăng ký →</button></div>
+  </section>
+
+  <section class="card hidden" id="step3">
+    <h2 class="section-title">Bước 3 — Kiểm tra & xác nhận</h2>
+    <div id="review"></div>
+    <div class="pay-at-site"><div class="mini">SỐ TIỀN DỰ KIẾN CẦN NỘP TRỰC TIẾP</div><div class="big" id="finalTotal">0đ</div><div class="warning"><strong>Không chuyển khoản.</strong> Chỉ nộp tiền trực tiếp tại Tầng 7, Nhà B – Văn phòng Bộ môn GMHS, Cơ sở 1 trong thời gian đăng ký.</div></div>
+    <div class="confirmline"><label><input type="checkbox" id="confirm"><span>Tôi xác nhận thông tin, ngày dự kiến đến, sản phẩm, số lượng và size đã chọn là chính xác.</span></label></div>
+    <div class="actions"><button class="secondary" onclick="back2()">← Chỉnh sửa sản phẩm</button><button class="primary" onclick="finish()">Xác nhận đăng ký</button></div>
+  </section>
+
+  <section class="card hidden" id="done"><div class="success"><div class="check">✓</div><h2>Đã tổng hợp đăng ký</h2><div class="sub" id="doneText"></div><div class="warning" style="max-width:720px;margin:18px auto;text-align:left"><strong>Nhắc lại:</strong> không chuyển khoản hoặc gửi tiền qua tin nhắn riêng. Vui lòng nộp tiền trực tiếp tại buổi đăng ký.</div><div class="actions" style="justify-content:center"><button class="secondary" onclick="location.reload()">Tạo đăng ký mới</button></div></div></section>
+
+  <div class="footer-note">Đăng ký đồng phục & vật dụng sinh viên • 11–13/09/2026</div>
+</div>
+<script src="dang-ky-3-ngay.js"></script>
+</body>
+</html>
