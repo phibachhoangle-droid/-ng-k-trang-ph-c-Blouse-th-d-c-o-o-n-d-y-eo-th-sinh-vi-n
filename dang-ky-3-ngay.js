@@ -6,7 +6,17 @@ const PRODUCTS={
  lanyard:{qty:'q_lanyard',name:'Dây đeo thẻ có logo trường',price:22000}
 };
 
-let state={total:0,lines:[],visit:null};
+const OFFICIAL_CLASSES=[
+ 'ĐH ĐD 14A','ĐH ĐD 14B','ĐH ĐD 14C','ĐH ĐD 14D','ĐH ĐD 14E',
+ 'ĐH KT XNYH 14A','ĐH KT XNYH 14B',
+ 'ĐH KT HAYH 13A','ĐH KT HAYH 13B',
+ 'ĐH KT PHCN 13A','ĐH KT PHCN 13B',
+ 'ĐH Dược học 14A','ĐH Dược học 14B',
+ 'ĐH YK 12A','ĐH YK 12B','ĐH YK 12C','ĐH YK 12D',
+ 'ĐH YTCC 10'
+];
+
+let state={total:0,lines:[],visit:null,qrClass:''};
 const $=id=>document.getElementById(id);
 const clean=s=>(s||'').trim();
 const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
@@ -21,6 +31,36 @@ function setStep(n){
  window.scrollTo({top:0,behavior:'smooth'});
 }
 
+function normalizeText(s){
+ return clean(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/Đ/g,'D').replace(/đ/g,'d').replace(/\s+/g,' ').toUpperCase();
+}
+
+function getClassName(){
+ const selected=clean($('className').value);
+ return selected==='KHÁC'?clean($('otherClass').value):selected;
+}
+
+function handleClassChange(){
+ const isOther=$('className').value==='KHÁC';
+ $('otherClassWrap').classList.toggle('hidden',!isOther);
+ if(!isOther)$('otherClass').value='';
+}
+
+function initClassSelection(){
+ $('className').addEventListener('change',handleClassChange);
+ const params=new URLSearchParams(window.location.search);
+ const requested=clean(params.get('class'));
+ if(!requested){handleClassChange();return}
+ const match=OFFICIAL_CLASSES.find(x=>normalizeText(x)===normalizeText(requested));
+ if(!match){handleClassChange();return}
+ $('className').value=match;
+ $('className').disabled=true;
+ state.qrClass=match;
+ $('classQrNote').textContent='✓ Lớp đã được xác định tự động từ QR: '+match;
+ $('classQrNote').classList.remove('hidden');
+ handleClassChange();
+}
+
 function selectedDay(){
  const x=document.querySelector('input[name="visitDay"]:checked');
  if(!x)return null;
@@ -29,8 +69,10 @@ function selectedDay(){
 }
 
 function validatePerson(){
- const required=[['name','Họ và tên'],['studentId','Mã sinh viên'],['cccd','Số CCCD'],['major','Ngành / nhóm học'],['className','Lớp'],['phone','Số điện thoại'],['email','Email']];
+ const required=[['name','Họ và tên'],['studentId','Mã sinh viên'],['cccd','Số CCCD'],['major','Ngành / nhóm học'],['phone','Số điện thoại'],['email','Email']];
  for(const [id,label] of required){if(!clean($(id).value)){alert('Vui lòng nhập/chọn '+label+'.');$(id).focus();return false}}
+ if(!clean($('className').value)){alert('Vui lòng chọn Lớp.');$('className').focus();return false}
+ if($('className').value==='KHÁC'&&!clean($('otherClass').value)){alert('Vui lòng nhập tên lớp của bạn.');$('otherClass').focus();return false}
  if(!/^\d{12}$/.test(clean($('cccd').value))){alert('Số CCCD phải gồm đúng 12 chữ số.');$('cccd').focus();return false}
  const phone=clean($('phone').value).replace(/\s/g,'');
  if(!/^0?\d{9,10}$/.test(phone)){alert('Vui lòng kiểm tra lại số điện thoại.');$('phone').focus();return false}
@@ -82,7 +124,7 @@ function back2(){setStep(2)}
 function renderReview(){
  state.visit=selectedDay();
  const person=[
-  ['Họ tên',clean($('name').value)],['MSSV',clean($('studentId').value)],['CCCD',clean($('cccd').value)],['Ngành / nhóm',clean($('major').value)],['Lớp',clean($('className').value)],['SĐT',clean($('phone').value)],['Email',clean($('email').value)]
+  ['Họ tên',clean($('name').value)],['MSSV',clean($('studentId').value)],['CCCD',clean($('cccd').value)],['Ngành / nhóm',clean($('major').value)],['Lớp',getClassName()],['SĐT',clean($('phone').value)],['Email',clean($('email').value)]
  ];
  const date=`<div class="review-date"><strong>Ngày dự kiến đến:</strong> ${state.visit.date} • ${state.visit.time}<br><span class="mini">Nhóm ưu tiên theo thông báo: ${state.visit.groups}. Sinh viên vẫn có thể đến bất kỳ thời gian nào trong 3 ngày.</span></div>`;
  const p='<div class="review"><div class="mini" style="font-weight:900;margin-bottom:4px">THÔNG TIN SINH VIÊN</div>'+person.map(x=>`<div class="line"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')+'</div>';
@@ -94,11 +136,12 @@ function renderReview(){
 function finish(){
  if(!$('confirm').checked){alert('Vui lòng tích xác nhận trước khi hoàn tất.');return}
  const day=state.visit||selectedDay();
- $('doneText').innerHTML=`Đăng ký của <strong>${clean($('name').value)}</strong> đã được tổng hợp.<br>Dự kiến đến: <strong>${day.date} • ${day.time}</strong>.<br>Số tiền dự kiến nộp trực tiếp: <strong>${money(state.total)}</strong>.`;
+ $('doneText').innerHTML=`Đăng ký của <strong>${clean($('name').value)}</strong> — lớp <strong>${getClassName()}</strong> đã được tổng hợp.<br>Dự kiến đến: <strong>${day.date} • ${day.time}</strong>.<br>Số tiền dự kiến nộp trực tiếp: <strong>${money(state.total)}</strong>.`;
  setStep(4);
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+ initClassSelection();
  document.querySelectorAll('.qty').forEach(el=>el.addEventListener('change',compute));
  ['type_blouse','sz_blouse','sz_union','sz_sport'].forEach(id=>$(id).addEventListener('change',compute));
  updateControlState();compute();
